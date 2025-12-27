@@ -1,20 +1,28 @@
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import {
+  DEFAULT_LANGUAGE,
+  DEFAULT_NAMESPACE,
+  NAMESPACES,
+  normalizeLanguage,
+  resources,
+} from './resources';
+
 export const i18n = i18next.createInstance();
 
 let initialized = false;
 
 export function initI18nClient(language: string) {
+  const lng = normalizeLanguage(language) ?? DEFAULT_LANGUAGE;
+
   if (!initialized) {
-    // No bundled translations in this simplified repo yet.
-    // This still enables `useTranslation()` and `Trans` to function (keys will fall back to the key string).
     void i18n.use(initReactI18next).init({
-      lng: language,
-      fallbackLng: 'en',
-      defaultNS: 'custom',
-      ns: ['custom', 'account'],
-      resources: {},
+      lng,
+      fallbackLng: DEFAULT_LANGUAGE,
+      defaultNS: DEFAULT_NAMESPACE,
+      ns: [...NAMESPACES],
+      resources,
       interpolation: { escapeValue: false },
       returnNull: false,
       returnEmptyString: false,
@@ -24,8 +32,8 @@ export function initI18nClient(language: string) {
     return i18n;
   }
 
-  if (i18n.language !== language) {
-    void i18n.changeLanguage(language);
+  if (i18n.language !== lng) {
+    void i18n.changeLanguage(lng);
   }
 
   return i18n;

@@ -173,7 +173,7 @@ export default function FileTranslationsHero({
         </div>
       );
     }
-    
+
     return (
       <PDFCompare
         key={mountKey}
@@ -186,7 +186,7 @@ export default function FileTranslationsHero({
   }, [t, mountKey]);
 
   return (
-    <div className="flex flex-col w-400 h-174 bg-background border rounded-lg shadow-sm">
+    <div className="flex flex-col w-[100rem] h-[43.5rem] bg-background border rounded-lg shadow-sm">
       <div className="flex items-center border-b overflow-x-auto">
         {tabs.map((tab) => (
           <Button

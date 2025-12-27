@@ -24,7 +24,7 @@ export function Hero({
   animate = true,
 }: HeroProps) {
   return (
-    <div className={cn('mx-auto flex flex-col space-y-20', className)}>
+    <div className={cn('mx-auto flex flex-col space-y-20 mt-20', className)}>
       <div
         style={{
           MozAnimationDuration: '100ms',

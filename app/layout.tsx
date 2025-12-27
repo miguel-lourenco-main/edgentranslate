@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers';
 
-import { Toaster } from '~/components/shadcn/sonner';
 import { cn } from '~/lib/utils';
 
 import { RootProviders } from '~/components/root-providers';
@@ -20,22 +19,17 @@ export default async function RootLayout({
   const className = getClassName(theme);
 
   return (
-    <html lang={language} className={className}>
-      <body>
+    <html lang={language} className={className} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <RootProviders theme={theme} lang={language}>
           {children}
         </RootProviders>
-
-        <Toaster richColors={true} theme={theme} position="top-center" />
       </body>
     </html>
   );
 }
 
 function getClassName(theme?: string) {
-  const dark = theme === 'dark';
-  const light = !dark;
-
   const font = [sans.variable, heading.variable].reduce<string[]>(
     (acc, curr) => {
       if (acc.includes(curr)) return acc;
@@ -45,10 +39,10 @@ function getClassName(theme?: string) {
     [],
   );
 
-  return cn('min-h-screen bg-background antialiased', ...font, {
-    dark,
-    light,
-  });
+  // Note: theme classes (`dark`/`light`) are applied client-side by `next-themes`.
+  // We intentionally do not stamp them server-side to avoid hydration mismatches when
+  // cookie/localStorage/system preferences disagree.
+  return cn('min-h-screen bg-background antialiased', ...font);
 }
 
 async function getTheme() {

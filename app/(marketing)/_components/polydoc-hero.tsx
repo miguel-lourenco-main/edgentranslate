@@ -112,7 +112,7 @@ export default function PolydocHero() {
         </Button>
       </div>
 
-      <div className='h-200 w-[80%]'>
+      <div className='h-[50rem] w-[80%]'>
         <FileTranslationForm
           files={files}
           setFiles={setFiles}

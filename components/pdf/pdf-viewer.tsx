@@ -55,7 +55,6 @@ export default function PDFViewer(
   // Always use an internal ref for the actual DOM element. If a parent wants the ref
   // (for scroll sync), we'll write it after mount.
   const containerRef = genericRef;
-
   /**
    * Handle container resize
    */

@@ -20,7 +20,6 @@ const PDFViewer = dynamic(() => import('./pdf-viewer'), { ssr: false });
  */
 export function PDFView({
     file,
-    isLoading,
     isRendered,
     index,
     type,
@@ -29,7 +28,6 @@ export function PDFView({
     scrollRefs,
 }: {
     file: File | null,           // PDF file to display
-    isLoading: boolean,          // Loading state
     isRendered: boolean,         // Whether PDF is fully rendered
     index: number,               // Index for sync scrolling
     type?: string,               // PDF type identifier
@@ -52,13 +50,13 @@ export function PDFView({
     return (
         <div className="size-full justify-center items-center overflow-hidden border-muted border rounded-md">
             {/* Show message when no file is available */}
-            {!file && !isLoading && (
+            {!file && (
                 <div className="size-full flex items-center justify-center">
                     {t('noFileCurrentlyAvailable')}
                 </div>
             )}
             {/* Show loading state */}
-            {(isLoading || (!isRendered && file)) && <LoadingDocument />}
+            {((!isRendered && file)) && <LoadingDocument />}
             {/* Render PDF viewer when file is available */}
             {file && (
                 <div className={cn("h-full w-full", isRendered ? "flex" : "hidden")}>
@@ -142,7 +140,6 @@ export default function PDFCompare({
                         !inputFileRendered && "flex-1")}>
                         <PDFView
                             file={inputFileState.file}
-                            isLoading={inputFileState.status === 'loading'}
                             isRendered={inputFileRendered}
                             index={0}
                             type={type}
@@ -162,7 +159,6 @@ export default function PDFCompare({
                         !outputFileRendered && "flex-1")}>
                         <PDFView
                             file={outputFileState.file}
-                            isLoading={outputFileState.status === 'loading'}
                             isRendered={outputFileRendered}
                             index={1}
                             type={type}

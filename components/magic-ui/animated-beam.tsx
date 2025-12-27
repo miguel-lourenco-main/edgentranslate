@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useEffect, useId, useState } from "react";
+import { RefObject, useEffect, useId, useMemo, useState } from "react";
 
 import { cn } from '~/lib/utils';
 
@@ -23,6 +23,17 @@ export interface AnimatedBeamProps {
   endYOffset?: number;
 }
 
+function stableUnitIntervalFromString(input: string) {
+  // Deterministic hash -> [0, 1). Keeps SSR and first client render identical (prevents hydration mismatches).
+  // FNV-1a 32-bit
+  let hash = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0) / 2 ** 32;
+}
+
 export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   className,
   containerRef,
@@ -30,9 +41,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   toRef,
   curvature = 0,
   flowToCenter = true,
-  // Duration prop kept for API compatibility but uses random duration internally
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  duration = 4,
+  duration,
   pathColor = "gray",
   pathWidth = 2,
   pathOpacity = 0.2,
@@ -46,11 +55,16 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   const id = useId();
   const [pathD, setPathD] = useState("");
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
-  // Generate random duration between 2.5 and 4 seconds on mount
-  const [randomDuration] = useState(() => Math.random() * 1.5 + 2.5);
 
-  // Increase speed by dividing duration by 1.6
-  const adjustedDuration = randomDuration / 1.6;
+  const adjustedDuration = useMemo(() => {
+    // If the caller provides `duration`, respect it.
+    // Otherwise pick a deterministic per-instance duration in [2.5, 4.0) seconds (seeded by `useId()`).
+    const baseDuration =
+      typeof duration === "number" ? duration : 2.5 + stableUnitIntervalFromString(id) * 1.5;
+
+    // Increase speed by dividing duration by 1.6
+    return baseDuration / 1.6;
+  }, [duration, id]);
 
   useEffect(() => {
     const updatePath = () => {
