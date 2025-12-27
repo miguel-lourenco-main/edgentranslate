@@ -2,15 +2,14 @@ import Link from 'next/link';
 
 import { ArrowLeft } from 'lucide-react';
 
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
-import { Button } from '@kit/ui/button';
-import { Heading } from '@kit/ui/heading';
-import { Trans } from '@kit/ui/trans';
+import { Button } from '~/components/shadcn/button';
+import { Heading } from '~/components/shadcn/heading';
+import { Trans } from '~/components/trans';
 
 import { SiteHeader } from '~/(marketing)/_components/site-header';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
-import { Database } from '~/lib/database.types';
+import { DUMMY_ACCOUNT } from '~/lib/constants';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
@@ -22,15 +21,10 @@ export const generateMetadata = async () => {
 };
 
 const NotFoundPage = async () => {
-  const client = getSupabaseServerClient<Database>();
-
-  const {
-    data: { user },
-  } = await client.auth.getUser();
 
   return (
     <div className={'flex h-screen flex-1 flex-col'}>
-      <SiteHeader user={user} />
+      <SiteHeader account={DUMMY_ACCOUNT}/>
 
       <div
         className={

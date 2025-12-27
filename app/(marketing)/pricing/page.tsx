@@ -1,8 +1,8 @@
-import { PolydocPricingTable } from '@kit/billing-gateway/components';
+import { PolydocPricingTable } from '~/components/billing/polydoc/polydoc-pricing-table';
 
 import { SitePageHeader } from '~/(marketing)/_components/site-page-header';
-import billingConfig from '~/config/billing.config';
-import pathsConfig from '~/config/paths.config';
+import billingConfig from '~/lib/config/billing.config';
+import pathsConfig from '~/lib/config/paths.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
@@ -15,7 +15,7 @@ export const generateMetadata = async () => {
 };
 
 const paths = {
-  signUp: pathsConfig.auth.signUp,
+  signUp: pathsConfig.app.home,
   return: pathsConfig.app.app,
 };
 

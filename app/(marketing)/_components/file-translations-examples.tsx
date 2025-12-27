@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useCallback, useEffect, useState, Suspense, useRef } from 'react';
+import React, { useCallback, useEffect, useState, Suspense, useSyncExternalStore } from 'react';
 import { Loader } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { TabData } from '@kit/ui/interfaces';
+import { TabData } from '~/lib/interfaces';
 import { FileText, FileIcon, FileCode } from "lucide-react"
-import { Button } from '@kit/ui/button';
-import GeneralLoading from '@kit/ui/general-loading';
-import PDFCompare from '@kit/ui/pdf-compare';
+import { Button } from '~/components/shadcn/button';
+import GeneralLoading from '~/components/general-loading';
+import PDFCompare from '~/components/pdf/pdf-compare';
 import { FileCache } from '~/lib/interfaces';
 
 const initialTabs: TabData[] = [
@@ -126,11 +126,11 @@ export function useLoadPublicFiles({
 }
 
 function useHasMounted() {
-  const hasMounted = useRef(false);
-  useEffect(() => {
-    hasMounted.current = true;
-  }, []);
-  return hasMounted.current;
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 }
 
 export default function FileTranslationsHero({
@@ -140,7 +140,8 @@ export default function FileTranslationsHero({
 }) {
   const { t } = useTranslation(`custom`);
 
-  const { tabsData: tabs, isLoading, error, currentTab, setCurrentTab } = useLoadPublicFiles({ targetLanguage });
+  const { tabsData: tabs, error, currentTab, setCurrentTab } =
+    useLoadPublicFiles({ targetLanguage });
   
   const hasMounted = useHasMounted();
 
@@ -178,16 +179,14 @@ export default function FileTranslationsHero({
         key={mountKey}
         inputFile={exampleFiles.original}
         outputFile={exampleFiles.translated}
-        isInputFileLoading={isLoading}
-        isOutputFileLoading={isLoading}
         currentTab={tab}
         type={tab.file.split('.').pop()}
       />
     );
-  }, [t, mountKey, isLoading]);
+  }, [t, mountKey]);
 
   return (
-    <div className="flex flex-col w-[100rem] h-[43.5rem] bg-background border rounded-lg shadow-sm">
+    <div className="flex flex-col w-400 h-174 bg-background border rounded-lg shadow-sm">
       <div className="flex items-center border-b overflow-x-auto">
         {tabs.map((tab) => (
           <Button

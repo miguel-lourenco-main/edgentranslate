@@ -1,31 +1,28 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { runsColumns } from './runs-columns';
 import { Plus } from 'lucide-react';
-import { Button } from '@kit/ui/button';
-import TooltipComponent from '@kit/ui/tooltip-component';
-import { CustomDataTable } from '@kit/ui/custom-data-table';
-import DialogLayout from '@kit/ui/dialog-layout';
+import { Button } from '~/components/shadcn/button';
+import TooltipComponent from '~/components/tooltip-component';
+import { CustomDataTable } from '~/components/data-table/data-table';
+import DialogLayout from '~/components/layouts/dialog-layout';
 import { useTranslation } from 'react-i18next';
-import { RunColumn } from '~/lib/interfaces';
-import { FileT, Run } from '~/lib/types';
-import { transformRuns } from '~/lib/utils';
+import { RunColumn, TrackableFile } from '~/lib/interfaces';
 import FileTranslationForm from '~/components/file-translation-form';
-import { DEFAULT_TARGET_LANGUAGE } from '@kit/shared/constants';
+import { DEFAULT_TARGET_LANGUAGE } from '~/lib/constants';
 import { SafeTranslation } from './safe-translation';
-import { TrackableFile } from '@kit/ui/interfaces';
 
 
 export default function RunsTable({
-  runs,
   files,
+  setFiles,
   newFilesDialogOpen,
   setNewFilesDialogOpen,
   onViewFiles,
 }: {
-  runs: Run[],
-  files: FileT[],
+  files: TrackableFile[],
+  setFiles: React.Dispatch<React.SetStateAction<TrackableFile[]>>,
   newFilesDialogOpen: boolean,
   setNewFilesDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
   onViewFiles: (run: RunColumn) => void,
@@ -39,22 +36,16 @@ export default function RunsTable({
 
     return (
       <div className="flex items-center gap-x-4">
-        <NewFilesButton open={newFilesDialogOpen} setOpen={setNewFilesDialogOpen} />
+        <NewFilesButton open={newFilesDialogOpen} setOpen={setNewFilesDialogOpen} files={files} setFiles={setFiles} />
       </div>
     )
 
-  }, [newFilesDialogOpen, setNewFilesDialogOpen]);
-
-  const [transformedRuns, setTransformedRuns] = useState<RunColumn[]>(transformRuns(runs, files));
-
-  useEffect(() => {
-    setTransformedRuns(transformRuns(runs, files));
-  }, [runs, files]);
+  }, [files, setFiles, newFilesDialogOpen, setNewFilesDialogOpen]);
 
   return (
     <SafeTranslation>
       <CustomDataTable
-        data={transformedRuns}
+        data={[]}
         columns={runsColumns(files, onViewFiles, t)}
         tableLabel={t('translations_lowercase')}
         filters={[]}
@@ -66,11 +57,9 @@ export default function RunsTable({
   );
 }
 
-function NewFilesButton({ open, setOpen }: { open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }){
+function NewFilesButton({ open, setOpen, files, setFiles }: { open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, files: TrackableFile[], setFiles: React.Dispatch<React.SetStateAction<TrackableFile[]>> }){
 
   const { t } = useTranslation('custom');
-
-  const [files, setFiles] = useState<TrackableFile[]>([]);
 
   const [targetLanguage, setTargetLanguage] = useState<string>(DEFAULT_TARGET_LANGUAGE);
 
@@ -112,16 +101,6 @@ function NewFilesButton({ open, setOpen }: { open: boolean, setOpen: React.Dispa
           setFiles={setFiles}
           targetLanguage={targetLanguage}
           setTargetLanguage={setTargetLanguage}
-          onStartSubmit={() => {
-            setIsSubmitting(true);
-          }}
-          onFinishSubmit={(success) => {
-            if (success) {
-              setFiles([])
-              setOpen(false);
-            }
-            setIsSubmitting(false);
-          }}
           submitButton={
             {
               content:

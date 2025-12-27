@@ -1,8 +1,8 @@
-import { Footer } from '@kit/ui/marketing';
-import { Trans } from '@kit/ui/trans';
+import { Footer } from '~/components/footer';
+import { Trans } from '~/components/trans';
 
 import { AppLogo } from '~/components/app-logo';
-import appConfig from '~/config/app.config';
+import appConfig from '~/lib/config/app.config';
 
 export function SiteFooter() {
   return (

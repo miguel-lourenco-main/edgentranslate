@@ -7,7 +7,7 @@ import {
     User,
   } from 'lucide-react';
    
-  import { Heading } from "@kit/ui/heading";
+  import { Heading } from "~/components/shadcn/heading";
    
   function FeatureIcon(props: React.PropsWithChildren) {
     return (

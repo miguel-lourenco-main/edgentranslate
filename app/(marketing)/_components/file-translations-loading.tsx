@@ -1,6 +1,6 @@
 function FileTranslationsExamplesLoading() {
     return (
-      <div className="relative w-[100rem] h-[43rem] bg-background border rounded-lg shadow-sm">
+      <div className="relative w-400 h-174 bg-background border rounded-lg shadow-sm">
         <div className="flex items-center border-b overflow-x-auto">
           {/* Placeholder tabs */}
           {[1, 2, 3, 4].map((_, index) => (
@@ -22,7 +22,7 @@ function FileTranslationsExamplesLoading() {
                 <div className="h-4 w-4 bg-muted-foreground/20 rounded" />
                 <div className="h-4 w-32 bg-muted-foreground/20 rounded" />
               </div>
-              <div className="aspect-[4/3] rounded-lg border bg-zinc-50 dark:bg-zinc-900 animate-pulse" />
+              <div className="aspect-4/3 rounded-lg border bg-zinc-50 dark:bg-zinc-900 animate-pulse" />
             </div>
   
             {/* Right panel */}
@@ -31,7 +31,7 @@ function FileTranslationsExamplesLoading() {
                 <div className="h-4 w-4 bg-muted-foreground/20 rounded" />
                 <div className="h-4 w-32 bg-muted-foreground/20 rounded" />
               </div>
-              <div className="aspect-[4/3] rounded-lg border bg-zinc-50 dark:bg-zinc-900 animate-pulse" />
+              <div className="aspect-4/3 rounded-lg border bg-zinc-50 dark:bg-zinc-900 animate-pulse" />
             </div>
           </div>
         </div>

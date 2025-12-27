@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 import { LogOut, Menu } from 'lucide-react';
 
-import { useSignOut } from '@kit/supabase/hooks/use-sign-out';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,20 +12,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@kit/ui/dropdown-menu';
-import { If } from '@kit/ui/if';
-import { Trans } from '@kit/ui/trans';
+} from '~/components/shadcn/dropdown-menu';
+import { If } from '~/components/if';
+import { Trans } from '~/components/trans';
 
-import featuresFlagConfig from '~/config/feature-flags.config';
-import { personalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
+import { personalAccountNavigationConfig } from '~/lib/config/personal-account-navigation.config';
 
-// home imports
-import { HomeAccountSelector } from './home-account-selector';
-import type { UserWorkspace } from '../_lib/server/load-user-workspace';
-
-export function HomeMobileNavigation(props: { workspace: UserWorkspace }) {
-  const signOut = useSignOut();
-
+export function HomeMobileNavigation() {
   const Links = personalAccountNavigationConfig.routes.map((item, index) => {
     if ('children' in item) {
       return item.children.map((child) => {
@@ -53,17 +45,11 @@ export function HomeMobileNavigation(props: { workspace: UserWorkspace }) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent sideOffset={10} className={'w-screen rounded-none'}>
-        <If condition={featuresFlagConfig.enableTeamAccounts}>
+        <If condition={true}>
           <DropdownMenuGroup>
             <DropdownMenuLabel>
               <Trans i18nKey={'common:yourAccounts'} />
             </DropdownMenuLabel>
-
-            <HomeAccountSelector
-              userId={props.workspace.user.id}
-              accounts={props.workspace.accounts}
-              collisionPadding={0}
-            />
           </DropdownMenuGroup>
 
           <DropdownMenuSeparator />
@@ -73,7 +59,7 @@ export function HomeMobileNavigation(props: { workspace: UserWorkspace }) {
 
         <DropdownMenuSeparator />
 
-        <SignOutDropdownItem onSignOut={() => signOut.mutateAsync()} />
+        <SignOutDropdownItem onSignOut={() => {}} />
       </DropdownMenuContent>
     </DropdownMenu>
   );

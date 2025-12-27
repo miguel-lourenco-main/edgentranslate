@@ -1,4 +1,4 @@
-import { cn } from '@kit/ui/lib';
+import { cn } from '~/lib/utils';
 
 export function SitePageHeader(props: {
   title: string;

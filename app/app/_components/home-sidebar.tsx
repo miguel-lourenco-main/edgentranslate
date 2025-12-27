@@ -1,4 +1,3 @@
-import { If } from '@kit/ui/if';
 import {
   Sidebar,
   SidebarContent,
@@ -6,51 +5,32 @@ import {
   SidebarHeader,
   SidebarNavigation,
   SidebarProvider,
-} from '@kit/ui/shadcn-sidebar';
-import { cn } from '@kit/ui/lib';
+} from '~/components/shadcn/sidebar';
+import { cn } from '~/lib/utils';
 
 import { AppLogo } from '~/components/app-logo';
 import { ProfileAccountDropdownContainer } from '~/components/personal-account-dropdown-container';
-import featuresFlagConfig from '~/config/feature-flags.config';
-import { personalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
-import { UserNotifications } from '~/app/(user)/_components/user-notifications';
+import { personalAccountNavigationConfig } from '~/lib/config/personal-account-navigation.config';
 
 // home imports
-import type { UserWorkspace } from '../_lib/server/load-user-workspace';
-import { HomeAccountSelector } from './home-account-selector';
 import SidebarTokensLeft from './custom/sidebar-tokens-left';
-
-interface HomeSidebarProps {
-  workspace: UserWorkspace;
-}
+import { DUMMY_ACCOUNT } from '~/lib/constants';
 
 const minimized = personalAccountNavigationConfig.sidebarCollapsed;
 
-export function HomeSidebar(props: HomeSidebarProps) {
-  const { workspace, user, accounts } = props.workspace;
+export function HomeSidebar() {
 
   return (
     <SidebarProvider minimized={minimized}>
       <Sidebar>
         <SidebarHeader className={'h-16 justify-center'}>
-          <div className={'flex items-center justify-between space-x-2'}>
-            <If
-              condition={featuresFlagConfig.enableTeamAccounts}
-              fallback={
-                <AppLogo
-                  className={cn({
-                    'max-w-full': minimized,
-                    'py-2': !minimized,
-                  })}
-                />
-              }
-            >
-              <HomeAccountSelector userId={user.id} accounts={accounts} />
-            </If>
-
-            <div className={'group-data-[minimized=true]:hidden'}>
-              <UserNotifications userId={user.id} />
-            </div>
+          <div className={'flex items-center justify-start'}>
+            <AppLogo
+              className={cn({
+                'max-w-full': minimized,
+                'py-2': !minimized,
+              })}
+            />
           </div>
         </SidebarHeader>
 
@@ -64,7 +44,9 @@ export function HomeSidebar(props: HomeSidebarProps) {
           </SidebarContent>
 
           <SidebarFooter>
-            <ProfileAccountDropdownContainer user={user} account={workspace} />
+            <ProfileAccountDropdownContainer account={
+              DUMMY_ACCOUNT
+            } />
           </SidebarFooter>
         </div>
       </Sidebar>

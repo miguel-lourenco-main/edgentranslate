@@ -3,13 +3,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import { fileColumns } from './translated-files-columns';
 import { Plus } from 'lucide-react';
-import { Button } from '@kit/ui/button';
-import TooltipComponent from '@kit/ui/tooltip-component';
-import { CustomDataTable } from '@kit/ui/custom-data-table';
-import DialogLayout from '@kit/ui/dialog-layout';
+import { Button } from '~/components/shadcn/button';
+import TooltipComponent from '~/components/tooltip-component';
+import { CustomDataTable } from '~/components/data-table/data-table';
+import DialogLayout from '~/components/layouts/dialog-layout';
 import { useTranslation } from 'react-i18next';
 import FileTranslationForm from "~/components/file-translation-form";
-import { TrackableFile } from '@kit/ui/interfaces';
+import { TrackableFile } from '~/lib/interfaces';
 
 export default function TranslatedFilesTable({
   files,

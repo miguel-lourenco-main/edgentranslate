@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 202 100% 7%;
+    --primary: 202 99% 43%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 202 30% 96%;
+    --secondary-foreground: 202 70% 10%;
+    --muted: 202 30% 96%;
+    --muted-foreground: 202 40% 40%;
+    --accent: 202 30% 96%;
+    --accent-foreground: 202 70% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 202 20% 90%;
+    --input: 202 20% 90%;
+    --ring: 202 99% 43%;
+    --radius: 0.5rem;
+
+    --chart-1: 202 99% 43%;
+    --chart-2: 220 70% 50%;
+    --chart-3: 160 60% 45%;
+    --chart-4: 30 80% 55%;
+    --chart-5: 280 65% 60%;
+
+    --logo-letter: #363536;
+
+    --light-primary: 202 99% 60%;
+    --light-foreground: 202 30% 20%;
+    --light-background: 202 30% 98%;
+    --dark-primary: 202 99% 43%;
+    --dark-foreground: 202 30% 80%;
+    --dark-background: 202 30% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 202 100% 7%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 202 100% 7%;
+    --grid-background: 202 30% 96%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+    --secondary: 215 27.9% 13%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 13%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 13%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 13%;
+    --input: 215 27.9% 13%;
+    --ring: 216 12.2% 83.9%;
+
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    --logo-letter: #e8e8e8;
+    --grid-background: 0 0% 15%;
+
+    --sidebar-background: 224 71.4% 4.1%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 27.9% 13%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+  /*
+    Keep `.container` responsive padding as plain CSS (see media query below).
+  */
+}
+
+@media (max-width: 639px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@layer utilities {
+  .translate-z-12 { transform: translateZ(12px); }
+  .translate-z-16 { transform: translateZ(16px); }
+  .translate-z-20 { transform: translateZ(20px); }
+  .translate-z-24 { transform: translateZ(24px); }
+  .translate-z-28 { transform: translateZ(28px); }
+  .translate-z-32 { transform: translateZ(32px); }
+  .rotate-x-0 { transform: rotateX(0deg); }
+  .rotate-x-15 { transform: rotateX(15deg); }
+  .rotate-x-30 { transform: rotateX(30deg); }
+  .rotate-x-45 { transform: rotateX(45deg); }
+}
+
+/*
+Optimize dropdowns for mobile
+ */
+[data-radix-popper-content-wrapper] {
+  width: 100%;
+}
+
+[data-radix-menu-content] {
+  border-radius: 0;
+}
+
+[data-radix-menu-content] [role='menuitem'] {
+  min-height: 3rem;
+}
+
+@media (min-width: 768px) {
+  [data-radix-popper-content-wrapper] {
+    width: auto;
+  }
+
+  [data-radix-menu-content] {
+    border-radius: var(--radius);
+  }
+
+  [data-radix-menu-content] [role='menuitem'] {
+    min-height: 0;
+  }
+}
+
+.site-header > .container:before,
+.site-footer > .container:before {
+  background: radial-gradient(
+    62.87% 100% at 50% 100%,
+    hsl(var(--primary) / 0.25) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+
+  bottom: 0;
+  content: '';
+  height: 1px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.dark .site-header > .container:before,
+.dark .site-footer > .container:before {
+  background: radial-gradient(
+    62.87% 100% at 50% 100%,
+    rgba(1, 157, 220, 0.16) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.site-footer > .container:before {
+  top: 0;
+}
+
+@keyframes pulse-text {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.1; }
+}
+
+.group:hover .group-hover\:animate-pulse-text {
+  animation: pulse-text 2s ease-in-out infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -230;
+  }
+}

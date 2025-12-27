@@ -1,21 +1,13 @@
-import { Database } from '~/lib/database.types';
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
-
 import { SiteFooter } from '~/(marketing)/_components/site-footer';
 import { SiteHeader } from '~/(marketing)/_components/site-header';
 import { withI18n } from '~/lib/i18n/with-i18n';
+import { DUMMY_ACCOUNT } from '~/lib/constants';
 
 async function SiteLayout(props: React.PropsWithChildren) {
-  const client = getSupabaseServerClient<Database>();
-
-  const {
-    data: { user },
-  } = await client.auth.getUser();
-
   return (
     <div className={'flex min-h-screen flex-col'}>
-      <SiteHeader user={user} />
-      <div className="mt-[4.5rem]"> {/* Add padding to account for fixed header */}
+      <SiteHeader account={DUMMY_ACCOUNT}/>
+      <div className="mt-18"> {/* Add padding to account for fixed header */}
         {props.children}
       </div>
       <SiteFooter />

@@ -1,12 +1,12 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Checkbox } from "@kit/ui/checkbox"
-import { DataTableColumnHeader } from "@kit/ui/data-table-column-header"
+import { Checkbox } from "~/components/shadcn/checkbox"
+import { DataTableColumnHeader } from "~/components/data-table/data-table-components/data-table-column-header"
 import { Download } from "lucide-react"
-import TooltipComponent from "@kit/ui/tooltip-component"
-import { cn } from '@kit/ui/lib'
-import { TrackableFile } from "@kit/ui/interfaces"
+import TooltipComponent from "~/components/tooltip-component"
+import { cn } from '~/lib/utils'
+import { TrackableFile } from "~/lib/interfaces"
 import type { TFunction } from "i18next";
 
 
@@ -22,7 +22,7 @@ export function fileColumns(t: TFunction<"ui", undefined>): ColumnDef<TrackableF
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
           className="translate-y-[2px]"
         />
@@ -30,7 +30,7 @@ export function fileColumns(t: TFunction<"ui", undefined>): ColumnDef<TrackableF
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          onCheckedChange={(value: boolean) => row.toggleSelected(!!value)}
           aria-label="Select row"
           className="translate-y-[2px]"
         />

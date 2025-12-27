@@ -1,14 +1,14 @@
 import { cookies } from 'next/headers';
 
-import { Toaster } from '@kit/ui/sonner';
-import { cn } from '@kit/ui/lib';
+import { Toaster } from '~/components/shadcn/sonner';
+import { cn } from '~/lib/utils';
 
 import { RootProviders } from '~/components/root-providers';
 import { heading, sans } from '~/lib/fonts';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { generateRootMetadata } from '~/lib/root-metdata';
 
-import '../styles/globals.css';
+import './globals.css';
 
 export default async function RootLayout({
   children,

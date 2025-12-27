@@ -1,3 +1,3 @@
-import { GlobalLoader } from '@kit/ui/global-loader';
+import { GlobalLoader } from '~/components/global-loader';
 
 export default GlobalLoader;

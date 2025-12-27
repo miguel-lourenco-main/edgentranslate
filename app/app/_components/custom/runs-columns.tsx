@@ -1,15 +1,13 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { DataTableColumnHeader } from "@kit/ui/data-table-column-header"
-import { RunColumn } from "~/lib/interfaces"
-import { FileT } from "~/lib/types"
+import { DataTableColumnHeader } from "~/components/data-table/data-table-components/data-table-column-header"
+import { RunColumn, TrackableFile } from "~/lib/interfaces"
 import { BanIcon, CheckCircle2Icon, Download, Eye, Loader } from "lucide-react"
-import TooltipComponent from "@kit/ui/tooltip-component"
-import { cn } from '@kit/ui/lib'
-import { downloadFile } from "~/lib/utils"
+import TooltipComponent from "~/components/tooltip-component"
+import { cn } from '~/lib/utils'
 import { toast } from "sonner"
-import { LANGUAGES_BY_REGION } from "@kit/shared/constants"
+import { LANGUAGES_BY_REGION } from "~/lib/constants"
 import type { TFunction } from "i18next";
 
 
@@ -26,7 +24,7 @@ const columnClasses = {
   actions: "w-1/6 min-w-[8rem] max-w-[12rem]",
 }
 
-export function runsColumns(files: FileT[], onViewFiles: (run: RunColumn) => void, t: TFunction<"custom", undefined>): ColumnDef<RunColumn>[] {
+export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn) => void, t: TFunction<"custom", undefined>): ColumnDef<RunColumn>[] {
 
   return [
     {
@@ -76,11 +74,11 @@ export function runsColumns(files: FileT[], onViewFiles: (run: RunColumn) => voi
       ),
       cell: ({ row }) => {
 
-        const file = row.original.input_file_info as FileT
+        const file = row.original.input_file_info?.fileObject
 
         return (
           <div className={cn(columnClasses.base, columnClasses.filename)}>
-            {file?.filename}
+            {file?.name}
           </div>
         )
       },
@@ -235,7 +233,7 @@ export function runsColumns(files: FileT[], onViewFiles: (run: RunColumn) => voi
                 onClick={() => {
                   if (outputFile) {
                     try {
-                      downloadFile(outputFile.url, outputFile.filename, false);
+                      toast.success("File downloaded (Not really!)");
                     } catch (error) {
                       console.error("Error downloading file:", error);
                       toast.error("Failed to download file");

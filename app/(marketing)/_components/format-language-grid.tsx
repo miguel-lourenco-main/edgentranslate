@@ -1,4 +1,4 @@
-import { Card } from "@kit/ui/card";
+import { Card } from "~/components/shadcn/card";
 
 interface Item {
   value: string;

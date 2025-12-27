@@ -1,20 +1,20 @@
 'use client'
 
-import { Button } from "@kit/ui/button";
-import { Hero } from "@kit/ui/marketing";
-import TypingAnimation from "@kit/ui/typing-animation";
-import { cn } from '@kit/ui/lib';
+import { Button } from "~/components/shadcn/button";
+import { Hero } from "~/components/hero";
+import TypingAnimation from "~/components/magic-ui/typing-animation";
+import { cn } from '~/lib/utils';
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { useTranslation } from "react-i18next";
 import FileTranslationForm from "~/components/file-translation-form";
 import { useSmoothScroll } from '~/lib/hooks/use-smooth-scroll';
-import pathsConfig from "~/config/paths.config";
-import { DEFAULT_TARGET_LANGUAGE, LANGUAGES } from "@kit/shared/constants";
+import pathsConfig from "~/lib/config/paths.config";
+import { DEFAULT_TARGET_LANGUAGE, LANGUAGES } from "~/lib/constants";
 import FileTranslationsExamples from './file-translations-examples';
-import CustomCombox from "@kit/ui/combox-custom";
-import { TrackableFile } from "@kit/ui/interfaces";
+import CustomCombox from "~/components/combox";
+import { TrackableFile } from "~/lib/interfaces";
   
 export default function PolydocHero() {
 
@@ -33,20 +33,21 @@ export default function PolydocHero() {
     }
   }, [smoothScrollTo]);
 
-  const [hasMounted, setHasMounted] = useState(false);
-  const [isSmallViewport, setIsSmallViewport] = useState(false);
+  const hasMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
-  useEffect(() => {
-    setHasMounted(true);
-    const checkViewportHeight = () => {
-      setIsSmallViewport(window.innerHeight < 900);
-    };
-
-    checkViewportHeight();
-    window.addEventListener('resize', checkViewportHeight);
-
-    return () => window.removeEventListener('resize', checkViewportHeight);
-  }, []);
+  const isSmallViewport = useSyncExternalStore(
+    (onStoreChange) => {
+      if (typeof window === 'undefined') return () => {};
+      window.addEventListener('resize', onStoreChange);
+      return () => window.removeEventListener('resize', onStoreChange);
+    },
+    () => (typeof window !== 'undefined' ? window.innerHeight < 900 : false),
+    () => false,
+  );
 
   const [targetLanguageExamples, setTargetLanguageExamples] = useState<string>(DEFAULT_TARGET_LANGUAGE);
 
@@ -111,7 +112,7 @@ export default function PolydocHero() {
         </Button>
       </div>
 
-      <div className='h-[50rem] w-[80%]'>
+      <div className='h-200 w-[80%]'>
         <FileTranslationForm
           files={files}
           setFiles={setFiles}

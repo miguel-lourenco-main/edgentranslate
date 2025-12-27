@@ -1,18 +1,15 @@
-import {
-  Pill,
-  SecondaryHero,
-} from '@kit/ui/marketing';
-
+import { Pill } from '~/components/pill';
+import { SecondaryHero } from '~/components/secondary-hero';
 import billingConfig from '~/config/billing.config';
 import pathsConfig from '~/config/paths.config';
 import { withI18n } from '~/lib/i18n/with-i18n';
-import { PolydocPricingTable } from '@kit/billing-gateway/components';
+import { PolydocPricingTable } from '~/components/billing/polydoc/polydoc-pricing-table';
 import PolydocHero from './_components/polydoc-hero';
-import { Heading } from '@kit/ui/heading';
-import { AnimatedBeamTranslatedFiles } from '@kit/ui/animated-translated-files';
-import { LANGUAGES_BY_REGION } from '@kit/shared/constants';
+import { Heading } from '~/components/shadcn/heading';
+import { AnimatedBeamTranslatedFiles } from '~/components/magic-ui/animated-translated-files';
+import { LANGUAGES_BY_REGION } from '~/lib/constants';
 import { FILE_FORMAT_GROUPS } from '~/lib/constants';
-import { getFileIcon } from '@kit/ui/lib';
+import { getFileIcon } from '~/lib/icons';
 import { FormatLanguageGrid } from './_components/format-language-grid';
 
 function Home() {
@@ -72,7 +69,7 @@ function Home() {
                   flex items-center
                   px-3 lg:px-4 py-2
                   dark:bg-light-background bg-dark-background rounded-lg
-                  min-w-[7rem] lg:min-w-[8rem] max-w-[10rem]
+                  min-w-28 lg:min-w-32 max-w-40
                   transition-colors
                 `}
               >
@@ -104,7 +101,7 @@ function Home() {
                     flex items-center
                     px-4 py-2
                     dark:bg-light-background bg-dark-background rounded-lg
-                    min-w-[8rem] max-w-[10rem]
+                    min-w-32 max-w-40
                     transition-colors
                   `}
                 >
@@ -136,7 +133,7 @@ function Home() {
             <PolydocPricingTable
               config={billingConfig}
               paths={{
-                signUp: pathsConfig.auth.signUp,
+                signUp: pathsConfig.app.app,
                 return: pathsConfig.app.app,
               }}
             />

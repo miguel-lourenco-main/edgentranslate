@@ -4,27 +4,25 @@ import Link from 'next/link';
 
 import { ArrowLeft, MessageCircle } from 'lucide-react';
 
-import { useCaptureException } from '@kit/monitoring/hooks';
-import { Button } from '@kit/ui/button';
-import { Heading } from '@kit/ui/heading';
-import { Trans } from '@kit/ui/trans';
+import { Button } from '~/components/shadcn/button';
+import { Heading } from '~/components/shadcn/heading';
+import { Trans } from '~/components/trans';
 
 import { SiteHeader } from '~/(marketing)/_components/site-header';
+import { DUMMY_ACCOUNT } from '~/lib/constants';
 
 const GlobalErrorPage = ({
-  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) => {
-  useCaptureException(error);
 
   return (
     <html>
       <body>
         <div className={'flex h-screen flex-1 flex-col'}>
-          <SiteHeader />
+          <SiteHeader account={DUMMY_ACCOUNT}/>
 
           <div
             className={

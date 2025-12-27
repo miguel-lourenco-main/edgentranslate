@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter} from '@kit/ui/alert-dialog';
-import { DeleteDialogLayout } from '@kit/ui/alert-dialog-layouts';
+import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter} from '~/components/shadcn/alert-dialog';
+import { DeleteDialogLayout } from '~/components/layouts/alert-dialog-layouts';
 import { useTranslation } from 'react-i18next';
 
 

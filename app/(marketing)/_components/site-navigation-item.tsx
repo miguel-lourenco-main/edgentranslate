@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { NavigationMenuItem } from '@kit/ui/navigation-menu';
-import { cn, isRouteActive } from '@kit/ui/lib';
+import { NavigationMenuItem } from '~/components/shadcn/navigation-menu';
+import { cn } from '~/lib/utils';
+
 
 const getClassName = (path: string, currentPathName: string) => {
-  const isActive = isRouteActive(path, currentPathName);
+  const isActive = path === currentPathName;
 
   return cn(
     `inline-flex w-max text-sm font-medium transition-colors duration-300`,

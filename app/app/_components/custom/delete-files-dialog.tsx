@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter} from '@kit/ui/alert-dialog';
-import { DeleteDialogLayout } from '@kit/ui/alert-dialog-layouts';
+import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter} from '~/components/shadcn/alert-dialog';
+import { DeleteDialogLayout } from '~/components/layouts/alert-dialog-layouts';
 import { Trash } from 'lucide-react';
-import { cn } from '@kit/ui/lib';
+import { cn } from '~/lib/utils';
 import { useTranslation } from 'react-i18next';
 
 

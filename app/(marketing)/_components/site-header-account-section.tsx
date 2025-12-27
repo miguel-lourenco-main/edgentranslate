@@ -3,22 +3,17 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import type { User } from '@supabase/supabase-js';
-
 import { ArrowRightIcon } from 'lucide-react';
 
-import { PersonalAccountDropdown } from '@kit/accounts/personal-account-dropdown';
-import { useSignOut } from '@kit/supabase/hooks/use-sign-out';
-import { useUser } from '@kit/supabase/hooks/use-user';
-import { Button } from '@kit/ui/button';
-import { If } from '@kit/ui/if';
-import { Trans } from '@kit/ui/trans';
+import { PersonalAccountDropdown } from '~/components/personal-account-dropdown';
+import { Button } from '~/components/shadcn/button';
+import { If } from '~/components/if';
+import { Trans } from '~/components/trans';
 
-import featuresFlagConfig from '~/config/feature-flags.config';
-import pathsConfig from '~/config/paths.config';
+import pathsConfig from '~/lib/config/paths.config';
 
 const ModeToggle = dynamic(() =>
-  import('@kit/ui/mode-toggle').then((mod) => ({
+  import('~/components/mode-toggle').then((mod) => ({
     default: mod.ModeToggle,
   })),
 );
@@ -28,34 +23,34 @@ const paths = {
 };
 
 const features = {
-  enableThemeToggle: featuresFlagConfig.enableThemeToggle,
+  enableThemeToggle: true,
 };
 
 export function SiteHeaderAccountSection({
-  user,
+  account,
 }: React.PropsWithChildren<{
-  user: User | null;
+  account: {
+    id: string | null;
+    name: string | null;
+    picture_url: string | null;
+    email: string | null;
+  };
 }>) {
-  if (!user) {
+  if (!account) {
     return <AuthButtons />;
   }
 
-  return <SuspendedPersonalAccountDropdown user={user} />;
+  return <SuspendedPersonalAccountDropdown account={account} />;
 }
 
-function SuspendedPersonalAccountDropdown(props: { user: User | null }) {
-  const signOut = useSignOut();
-  const user = useUser(props.user);
-  const userData = user.data ?? props.user ?? null;
-
-  if (userData) {
+function SuspendedPersonalAccountDropdown(props: { account: { id: string | null; name: string | null; picture_url: string | null; email: string | null; } }) {
+  if (props.account) {
     return (
       <PersonalAccountDropdown
         showProfileName={false}
         paths={paths}
         features={features}
-        user={userData}
-        signOutRequested={() => signOut.mutateAsync()}
+        account={props.account}
       />
     );
   }
@@ -72,14 +67,14 @@ function AuthButtons() {
         </If>
 
         <Button asChild variant={'ghost'}>
-          <Link href={pathsConfig.auth.signIn}>
+          <Link href={pathsConfig.app.home}>
             <Trans i18nKey={'auth:signIn'} />
           </Link>
         </Button>
       </div>
 
       <Button asChild className="group" variant={'default'} data-test="sign-up">
-        <Link href={pathsConfig.auth.signUp}>
+        <Link href={pathsConfig.app.home}>
           <Trans i18nKey={'auth:signUp'} />
 
           <ArrowRightIcon

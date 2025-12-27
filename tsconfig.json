@@ -18,9 +18,14 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
-    }
+      "~/*": ["./app/*"],
+      "~/config/*": ["./lib/config/*"],
+      "~/components/*": ["./components/*"],
+      "~/lib/*": ["./lib/*"]
+    },
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
   "include": [
     "next-env.d.ts",

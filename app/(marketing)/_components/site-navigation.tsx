@@ -7,9 +7,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@kit/ui/dropdown-menu';
-import { NavigationMenu, NavigationMenuList } from '@kit/ui/navigation-menu';
-import { Trans } from '@kit/ui/trans';
+} from '~/components/shadcn/dropdown-menu';
+import { NavigationMenu, NavigationMenuList } from '~/components/shadcn/navigation-menu';
+import { Trans } from '~/components/trans';
 
 import { SiteNavigationItem } from './site-navigation-item';
 
