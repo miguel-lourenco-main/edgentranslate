@@ -3,13 +3,9 @@ import { use } from 'react';
 import { PageBody } from '~/components/page';
 
 import pathsConfig from '~/config/paths.config';
-import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
 import { PersonalAccountSettingsContainer } from './_components/personal-account-settings'
-
-const isStaticExport =
-  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
 
 const features = {
   enableAccountDeletion: true,
@@ -24,12 +20,8 @@ const paths = {
 };
 
 export const generateMetadata = async () => {
-  const title = isStaticExport
-    ? 'Settings'
-    : (await createI18nServerInstance()).t('account:settingsTab');
-
   return {
-    title,
+    title: 'Settings',
   };
 };
 

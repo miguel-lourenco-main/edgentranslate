@@ -28,11 +28,10 @@ pages:
   stage: deploy
   script:
     - pnpm install --frozen-lockfile
-    # Build a static export for GitLab Pages under /<projectName>.
-    # Ensure config validation doesn't block CI builds.
+    # Static export build for GitLab Pages.
     - export NEXT_PUBLIC_CI=true
-    - export NEXT_PUBLIC_SITE_URL="https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}"
-    - GITLAB_PAGES=true pnpm build
+    - export NEXT_PUBLIC_SITE_URL="${CI_PAGES_URL}"
+    - pnpm build
     - rm -rf public
     - mv out public
   artifacts:

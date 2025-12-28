@@ -7,20 +7,12 @@ import { Heading } from '~/components/shadcn/heading';
 import { Trans } from '~/components/trans';
 
 import { SiteHeader } from '~/(marketing)/_components/site-header';
-import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { DUMMY_ACCOUNT } from '~/lib/constants';
 
-const isStaticExport =
-  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
-
 export const generateMetadata = async () => {
-  const title = isStaticExport
-    ? 'Not found'
-    : (await createI18nServerInstance()).t('common:notFound');
-
   return {
-    title,
+    title: 'Not found',
   };
 };
 
