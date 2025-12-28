@@ -154,31 +154,6 @@ export function PersonalAccountDropdown({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem asChild>
-          <Link className={'s-full flex items-center space-x-2'} href={'/docs'}>
-            <MessageCircleQuestion className={'h-5'} />
-
-            <span>
-              <Trans i18nKey={'common:documentation'} />
-            </span>
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem asChild>
-          <Link
-            className={'s-full flex items-center space-x-2'}
-            href={'/admin'}
-          >
-            <Shield className={'h-5'} />
-
-            <span>Admin</span>
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
         <If condition={features.enableThemeToggle}>
           <SubMenuModeToggle />
         </If>

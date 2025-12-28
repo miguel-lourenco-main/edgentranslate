@@ -83,18 +83,6 @@ import {
           Pre-built UI Components to Speed Up Your Development
         </div>
       </div>
-   
-      <div className={'flex flex-col space-y-3 text-center'}>
-        <FeatureIcon>
-          <File className={'h-6'} />
-        </FeatureIcon>
-
-        <Heading level={3}>Blog and Documentation</Heading>
-   
-        <div className={'text-gray-500 dark:text-gray-400'}>
-          Pre-built Blog and Documentation Pages to Help Your Users
-        </div>
-      </div>
     </div>
   );
 }

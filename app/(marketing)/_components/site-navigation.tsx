@@ -14,19 +14,9 @@ import { Trans } from '~/components/trans';
 import { SiteNavigationItem } from './site-navigation-item';
 
 const links = {
-  /**
-    Docs: {
-      label: 'marketing:documentation',
-      path: '/docs',
-    },
-  */
   Pricing: {
     label: 'marketing:pricing',
     path: '/pricing',
-  },
-  FAQ: {
-    label: 'marketing:faq',
-    path: '/faq',
   },
   Contact: {
     label: 'marketing:contact',
