@@ -72,9 +72,9 @@ export function PolydocPricingTable({
     }
 
     return {
-      productName: 'Pro',
-      tierText: '$0.25 / page',
-      tierIndex: 0,
+      productName: 'Business',
+      tierText: '$0.10 / page',
+      tierIndex: 2,
     };
   }, [config.products, interval, pageCount]);
 
@@ -471,7 +471,7 @@ function DefaultCheckoutButton(
   
   //const linkHref =props.plan.href ?? `app/billing` ?? '';
 
-  const linkHref = `app/billing`
+  const linkHref = `/`
 
   const label = props.plan.buttonLabel ?? 'common:getStartedWithPlan';
 

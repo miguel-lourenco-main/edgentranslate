@@ -22,14 +22,9 @@ const routes = [
     children: [
       {
         label: 'common:routes.profile',
-        path: pathsConfig.app.home,
+        path: pathsConfig.app.profile,
         Icon: <User className={iconClasses} />,
       },
-      {
-        label: 'common:routes.billing',
-        path: pathsConfig.app.home,
-        Icon: <CreditCard className={iconClasses} />,
-      }
     ].filter((route) => !!route),
   },
 ] satisfies z.infer<typeof NavigationConfigSchema>['routes'];

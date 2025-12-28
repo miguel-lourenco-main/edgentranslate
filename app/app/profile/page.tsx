@@ -1,22 +1,20 @@
 import { use } from 'react';
 
-import { PersonalAccountSettingsContainer } from '@kit/accounts/personal-account-settings';
-import { PageBody } from '@kit/ui/page';
+import { PageBody } from '~/components/page';
 
-import authConfig from '~/config/auth.config';
-import featureFlagsConfig from '~/config/feature-flags.config';
 import pathsConfig from '~/config/paths.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
-import { requireUserInServerComponent } from '~/lib/server/require-user-in-server-component';
+
+import { PersonalAccountSettingsContainer } from './_components/personal-account-settings'
 
 const features = {
-  enableAccountDeletion: featureFlagsConfig.enableAccountDeletion,
-  enablePasswordUpdate: authConfig.providers.password,
+  enableAccountDeletion: true,
+  enablePasswordUpdate: true,
 };
 
-const callbackPath = pathsConfig.app.settings;
-const accountHomePath = pathsConfig.app.settings;
+const callbackPath = pathsConfig.app.profile;
+const accountHomePath = pathsConfig.app.profile;
 
 const paths = {
   callback: callbackPath + `?next=${accountHomePath}`,
@@ -32,13 +30,17 @@ export const generateMetadata = async () => {
 };
 
 function PersonalAccountSettingsPage() {
-  const user = use(requireUserInServerComponent());
 
   return (
     <PageBody>
       <div className={'flex w-full flex-1 flex-col lg:max-w-2xl'}>
         <PersonalAccountSettingsContainer
-          userId={user.id}
+          account={{
+            id: "1",
+            name: "John Doe",
+            picture_url: "/avatar.jpeg",
+            email: "johndoe@gmail.com"
+          }}
           features={features}
           paths={paths}
         />

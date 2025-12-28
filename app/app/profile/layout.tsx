@@ -9,7 +9,7 @@ function UserSettingsLayout(props: React.PropsWithChildren) {
   return (
     <>
       <HomeLayoutPageHeader
-        title={<Trans i18nKey={'account:routes.settings'} />}
+        title={'Profile'}
         description={'Your Profile Page'}
       />
 
