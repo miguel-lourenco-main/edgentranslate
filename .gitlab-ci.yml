@@ -16,29 +16,33 @@ variables:
 
 before_script:
   - corepack enable
-  - pnpm config set store-dir "$CI_PROJECT_DIR/.pnpm-store"
+  - corepack prepare pnpm@latest --activate
+  - pnpm config set store-dir .pnpm-store
+  - pnpm install --frozen-lockfile --prod=false
 
 build:
   stage: build
   script:
-    - pnpm install --frozen-lockfile
     - pnpm build
+  artifacts:
+    paths:
+      - out/
+    expire_in: 1 hour
+  only:
+    - main
 
 pages:
   stage: deploy
   script:
-    - pnpm install --frozen-lockfile
-    # Static export build for GitLab Pages.
-    - export NEXT_PUBLIC_CI=true
-    - export NEXT_PUBLIC_SITE_URL="${CI_PAGES_URL}"
-    # GitLab *Project* Pages are served under /<projectName>.
-    - export NEXT_PUBLIC_BASE_PATH="/${CI_PROJECT_NAME}"
-    - pnpm build
-    - rm -rf public
-    - mv out public
+    - cp -r out/* public/
   artifacts:
     paths:
       - public
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    expire_in: never
+  only:
+    - main
+  # Ensure public access
+  environment:
+    name: production
+    url: $CI_PAGES_URL
 
