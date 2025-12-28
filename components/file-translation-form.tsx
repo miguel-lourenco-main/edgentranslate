@@ -44,6 +44,7 @@ export default function FileTranslationForm({
 
     const { t } = useTranslation(['custom', 'ui']);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
 
     const { control, handleSubmit, formState: { errors }, setValue } = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -73,6 +74,7 @@ export default function FileTranslationForm({
     const handleAddFiles = useCallback(async (toAddFiles: TrackableFile[]) => {
         try {
             // Initially set files with uploading status
+            setUploadingFiles(true);
             const filesWithUploadingStatus = toAddFiles.map(f => ({
                 ...f,
                 id: f.id ?? (typeof crypto !== 'undefined' ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`),
@@ -87,12 +89,15 @@ export default function FileTranslationForm({
                 if(setFiles){
                     setFiles(prev => prev.map(f => f.uploadingStatus === 'uploading' ? { ...f, uploadingStatus: 'uploaded' } : f));
                 }
+                setUploadingFiles(false);
             }, 3000);
 
         } catch (error) {
             console.log('Failed to add files:', error);
+        } finally {
+            setUploadingFiles(false);
         }
-    }, [setFiles]);
+    }, [setFiles, setUploadingFiles]);
 
 
     const handleRemoveFiles = useCallback(async (toFilterFiles: TrackableFile[]) => {
@@ -168,7 +173,7 @@ export default function FileTranslationForm({
             
             {submitButton?.y === "bottom" && (
                 <div className={cn("flex w-full px-2", submitButton.x === "left" ? "justify-start" : submitButton.x === "right" ? "justify-end" : "justify-center")} >
-                    {submitButton.content ?? <Button type="submit" disabled={isSubmitting}>{t('submit')}</Button>}
+                    {submitButton.content ?? <Button type="submit" disabled={isSubmitting || uploadingFiles}>{uploadingFiles ? t('ui:uploadingFiles') : t('submit')}</Button>}
                 </div>
             )}
         </form>

@@ -20,6 +20,9 @@ import { HomeMenuNavigation } from './_components/home-menu-navigation';
 import { HomeMobileNavigation } from './_components/home-mobile-navigation';
 import { HomeSidebar } from './_components/home-sidebar';
 
+const isStaticExport =
+  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
+
 function UserHomeLayout({ children }: React.PropsWithChildren) {
   const style = use(getLayoutStyle());
 
@@ -49,6 +52,10 @@ function UserHomeLayout({ children }: React.PropsWithChildren) {
 export default withI18n(UserHomeLayout);
 
 async function getLayoutStyle() {
+  if (isStaticExport) {
+    return personalAccountNavigationConfig.style;
+  }
+
   const cookieStore = await cookies();
 
   return (

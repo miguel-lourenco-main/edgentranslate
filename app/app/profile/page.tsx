@@ -8,6 +8,9 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 
 import { PersonalAccountSettingsContainer } from './_components/personal-account-settings'
 
+const isStaticExport =
+  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
+
 const features = {
   enableAccountDeletion: true,
   enablePasswordUpdate: true,
@@ -21,8 +24,9 @@ const paths = {
 };
 
 export const generateMetadata = async () => {
-  const i18n = await createI18nServerInstance();
-  const title = i18n.t('account:settingsTab');
+  const title = isStaticExport
+    ? 'Settings'
+    : (await createI18nServerInstance()).t('account:settingsTab');
 
   return {
     title,

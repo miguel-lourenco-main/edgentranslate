@@ -4,13 +4,17 @@ import { headers } from 'next/headers';
 
 import appConfig from './config/app.config';
 
+const isStaticExport =
+  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
+
 /**
  * @name generateRootMetadata
  * @description Generates the root metadata for the application
  */
 export const generateRootMetadata = async (): Promise<Metadata> => {
-  const headersStore = await headers();
-  const csrfToken = headersStore.get('x-csrf-token') ?? '';
+  const csrfToken = isStaticExport
+    ? ''
+    : ((await headers()).get('x-csrf-token') ?? '');
 
   return {
     title: appConfig.title,

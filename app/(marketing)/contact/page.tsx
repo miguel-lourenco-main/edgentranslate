@@ -6,22 +6,25 @@ import { ContactForm } from '~/(marketing)/contact/_components/contact-form';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
-export async function generateMetadata() {
-  const { t } = await createI18nServerInstance();
+const isStaticExport =
+  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
 
+export async function generateMetadata() {
   return {
-    title: t('marketing:contact'),
+    title: isStaticExport
+      ? 'Contact'
+      : (await createI18nServerInstance()).t('marketing:contact'),
   };
 }
 
 async function ContactPage() {
-  const { t } = await createI18nServerInstance();
+  const t = isStaticExport ? null : (await createI18nServerInstance()).t;
 
   return (
     <div className='mt-12'>
       <SitePageHeader
-        title={t(`marketing:contact`)}
-        subtitle={t(`marketing:contactDescription`)}
+        title={t ? t(`marketing:contact`) : 'Contact'}
+        subtitle={t ? t(`marketing:contactDescription`) : 'Get in touch.'}
       />
 
       <div className={'container mx-auto'}>

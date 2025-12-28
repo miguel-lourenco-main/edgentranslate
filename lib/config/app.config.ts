@@ -2,6 +2,10 @@ import { z } from 'zod';
 
 const production = process.env.NODE_ENV === 'production';
 
+function isTruthyEnv(value: string | undefined) {
+  return value === '1' || value === 'true' || value === 'yes';
+}
+
 const AppConfigSchema = z
   .object({
     name: z
@@ -20,7 +24,7 @@ const AppConfigSchema = z
       .string()
       .min(1, { message: `Please provide the variable NEXT_PUBLIC_SITE_URL` })
       .url({
-        message: `You are deploying a production build but have entered a NEXT_PUBLIC_SITE_URL variable using http instead of https. It is very likely that you have set the incorrect URL. The build will now fail to prevent you from from deploying a faulty configuration. Please provide the variable NEXT_PUBLIC_SITE_URL with a valid URL, such as: 'https://example.com'`,
+        message: `Please provide a valid URL for NEXT_PUBLIC_SITE_URL, such as: 'https://example.com'`,
       }),
     locale: z
       .string()
@@ -34,13 +38,35 @@ const AppConfigSchema = z
   })
   .refine(
     (schema) => {
-      const isCI = process.env.NEXT_PUBLIC_CI;
+      const isCI =
+        isTruthyEnv(process.env.NEXT_PUBLIC_CI) ||
+        isTruthyEnv(process.env.CI) ||
+        isTruthyEnv(process.env.GITLAB_CI);
 
-      if (isCI ?? !schema.production) {
+      if (isCI || !schema.production) {
         return true;
       }
 
-      return !schema.url.startsWith('http:');
+      // Allow local production builds (e.g. testing `next build` locally) using http://localhost.
+      // For real production deployments we enforce HTTPS to avoid shipping a broken sitemap/robots config.
+      try {
+        const parsed = new URL(schema.url);
+
+        if (parsed.protocol === 'https:') {
+          return true;
+        }
+
+        if (
+          parsed.protocol === 'http:' &&
+          ['localhost', '127.0.0.1', '0.0.0.0'].includes(parsed.hostname)
+        ) {
+          return true;
+        }
+
+        return false;
+      } catch {
+        return false;
+      }
     },
     {
       message: `Please provide a valid HTTPS URL. Set the variable NEXT_PUBLIC_SITE_URL with a valid URL, such as: 'https://example.com'`,

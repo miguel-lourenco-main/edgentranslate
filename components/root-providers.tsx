@@ -16,7 +16,7 @@ import { SmoothScrollProvider } from '~/lib/hooks/use-smooth-scroll';
 declare global {
   // pdfjs-dist@5 uses Promise.withResolvers; Firefox may not have it depending on version/config.
   interface PromiseConstructor {
-    withResolvers?<T>(): {
+    withResolvers<T>(): {
       promise: Promise<T>;
       resolve: (value: T | PromiseLike<T>) => void;
       reject: (reason?: unknown) => void;

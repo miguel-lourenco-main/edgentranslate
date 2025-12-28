@@ -105,11 +105,27 @@ async function getAvatarFileName(
   userId: string,
   extension: string | undefined,
 ) {
-  const { nanoid } = await import('nanoid');
-
   // we add a version to the URL to ensure
   // the browser always fetches the latest image
-  const uniqueId = nanoid(16);
+  const uniqueId = createCacheBustingId(16);
 
   return `${userId}.${extension}?v=${uniqueId}`;
+}
+
+function createCacheBustingId(length = 16) {
+  // Prefer the platform crypto implementation (browser/edge runtime).
+  // `randomUUID()` is widely supported and avoids adding dependencies.
+  const uuid =
+    typeof globalThis !== 'undefined' &&
+    'crypto' in globalThis &&
+    typeof globalThis.crypto?.randomUUID === 'function'
+      ? globalThis.crypto.randomUUID()
+      : null;
+
+  if (uuid) {
+    return uuid.replace(/-/g, '').slice(0, length);
+  }
+
+  // Fallback: non-cryptographic, but good enough for cache-busting.
+  return Math.random().toString(36).slice(2, 2 + length);
 }

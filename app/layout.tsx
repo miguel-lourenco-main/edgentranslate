@@ -9,13 +9,16 @@ import { generateRootMetadata } from '~/lib/root-metdata';
 
 import './globals.css';
 
+const isStaticExport =
+  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { language } = await createI18nServerInstance();
-  const theme = await getTheme();
+  const language = isStaticExport ? 'en' : (await createI18nServerInstance()).language;
+  const theme = isStaticExport ? undefined : await getTheme();
   const className = getClassName(theme);
 
   return (
@@ -52,4 +55,6 @@ async function getTheme() {
 
 export const generateMetadata = generateRootMetadata;
 
-export const runtime = 'edge';
+// Note: we intentionally do not set `runtime`/`dynamic` here.
+// - Normal builds can stay dynamic (cookies/headers).
+// - GitLab Pages builds avoid request-time APIs via `isStaticExport` branches above.

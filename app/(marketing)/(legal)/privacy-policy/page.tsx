@@ -2,22 +2,29 @@ import { SitePageHeader } from '~/(marketing)/_components/site-page-header';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
-export async function generateMetadata() {
-  const { t } = await createI18nServerInstance();
+const isStaticExport =
+  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
 
+export async function generateMetadata() {
   return {
-    title: t('marketing:privacyPolicy'),
+    title: isStaticExport
+      ? 'Privacy Policy'
+      : (await createI18nServerInstance()).t('marketing:privacyPolicy'),
   };
 }
 
 async function PrivacyPolicyPage() {
-  const { t } = await createI18nServerInstance();
+  const t = isStaticExport ? null : (await createI18nServerInstance()).t;
 
   return (
     <div>
       <SitePageHeader
-        title={t('marketing:privacyPolicy')}
-        subtitle={t('marketing:privacyPolicyDescription')}
+        title={t ? t('marketing:privacyPolicy') : 'Privacy Policy'}
+        subtitle={
+          t
+            ? t('marketing:privacyPolicyDescription')
+            : 'How we handle your data.'
+        }
       />
 
       <div className={'container mx-auto py-8'}>

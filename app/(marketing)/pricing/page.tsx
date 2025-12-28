@@ -6,11 +6,14 @@ import pathsConfig from '~/lib/config/paths.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
-export const generateMetadata = async () => {
-  const { t } = await createI18nServerInstance();
+const isStaticExport =
+  process.env.GITLAB_PAGES === 'true' || process.env.GITLAB_PAGES === '1';
 
+export const generateMetadata = async () => {
   return {
-    title: t('marketing:pricing'),
+    title: isStaticExport
+      ? 'Pricing'
+      : (await createI18nServerInstance()).t('marketing:pricing'),
   };
 };
 
@@ -20,13 +23,13 @@ const paths = {
 };
 
 async function PricingPage() {
-  const { t } = await createI18nServerInstance();
+  const t = isStaticExport ? null : (await createI18nServerInstance()).t;
 
   return (
     <div className={'flex flex-col space-y-12 mt-12'}>
       <SitePageHeader
-        title={t('marketing:pricing')}
-        subtitle={t('marketing:pricingSubtitle')}
+        title={t ? t('marketing:pricing') : 'Pricing'}
+        subtitle={t ? t('marketing:pricingSubtitle') : 'Choose a plan.'}
       />
 
       <div className={'container mx-auto pb-8 xl:pb-16'}>

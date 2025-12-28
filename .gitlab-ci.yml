@@ -1,0 +1,43 @@
+image: node:20
+
+stages:
+  - build
+  - deploy
+
+cache:
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - .pnpm-store/
+
+variables:
+  PNPM_HOME: "$CI_PROJECT_DIR/.pnpm"
+
+before_script:
+  - corepack enable
+  - pnpm config set store-dir "$CI_PROJECT_DIR/.pnpm-store"
+
+build:
+  stage: build
+  script:
+    - pnpm install --frozen-lockfile
+    - pnpm build
+
+pages:
+  stage: deploy
+  script:
+    - pnpm install --frozen-lockfile
+    # Build a static export for GitLab Pages under /<projectName>.
+    # Ensure config validation doesn't block CI builds.
+    - export NEXT_PUBLIC_CI=true
+    - export NEXT_PUBLIC_SITE_URL="https://${CI_PROJECT_ROOT_NAMESPACE}.gitlab.io/${CI_PROJECT_NAME}"
+    - GITLAB_PAGES=true pnpm build
+    - rm -rf public
+    - mv out public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
