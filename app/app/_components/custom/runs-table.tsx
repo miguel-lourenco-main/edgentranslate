@@ -15,20 +15,24 @@ import { SafeTranslation } from './safe-translation';
 
 
 export default function RunsTable({
-  files,
-  setFiles,
+  runs,
+  newFiles,
+  setNewFiles,
   newFilesDialogOpen,
   setNewFilesDialogOpen,
   onViewFiles,
+  onCreateRuns,
 }: {
-  files: TrackableFile[],
-  setFiles: React.Dispatch<React.SetStateAction<TrackableFile[]>>,
+  runs: RunColumn[],
+  newFiles: TrackableFile[],
+  setNewFiles: React.Dispatch<React.SetStateAction<TrackableFile[]>>,
   newFilesDialogOpen: boolean,
   setNewFilesDialogOpen: React.Dispatch<React.SetStateAction<boolean>>,
   onViewFiles: (run: RunColumn) => void,
+  onCreateRuns: (input: { files: TrackableFile[]; targetLanguage: string }) => void,
 }) {
 
-  const { t } = useTranslation('custom');
+  const { t } = useTranslation();
 
   // TODO: switch the translation file being used for the components that moved from ui package to polydoc app
 
@@ -36,18 +40,24 @@ export default function RunsTable({
 
     return (
       <div className="flex items-center gap-x-4">
-        <NewFilesButton open={newFilesDialogOpen} setOpen={setNewFilesDialogOpen} files={files} setFiles={setFiles} />
+        <NewFilesButton
+          open={newFilesDialogOpen}
+          setOpen={setNewFilesDialogOpen}
+          files={newFiles}
+          setFiles={setNewFiles}
+          onCreateRuns={onCreateRuns}
+        />
       </div>
     )
 
-  }, [files, setFiles, newFilesDialogOpen, setNewFilesDialogOpen]);
+  }, [newFiles, setNewFiles, newFilesDialogOpen, setNewFilesDialogOpen, onCreateRuns]);
 
   return (
     <SafeTranslation>
       <CustomDataTable
-        data={[]}
-        columns={runsColumns(files, onViewFiles, t)}
-        tableLabel={t('translations_lowercase')}
+        data={runs}
+        columns={runsColumns(onViewFiles, t)}
+        tableLabel={t('custom:translations_lowercase')}
         filters={[]}
         createToolbarButtons={createToolbarButtons}
         identifier="filename"
@@ -57,9 +67,21 @@ export default function RunsTable({
   );
 }
 
-function NewFilesButton({ open, setOpen, files, setFiles }: { open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, files: TrackableFile[], setFiles: React.Dispatch<React.SetStateAction<TrackableFile[]>> }){
+function NewFilesButton({
+  open,
+  setOpen,
+  files,
+  setFiles,
+  onCreateRuns,
+}: {
+  open: boolean,
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  files: TrackableFile[],
+  setFiles: React.Dispatch<React.SetStateAction<TrackableFile[]>>,
+  onCreateRuns: (input: { files: TrackableFile[]; targetLanguage: string }) => void,
+}){
 
-  const { t } = useTranslation('custom');
+  const { t } = useTranslation(['custom', 'ui']);
 
   const [targetLanguage, setTargetLanguage] = useState<string>(DEFAULT_TARGET_LANGUAGE);
 
@@ -77,7 +99,7 @@ function NewFilesButton({ open, setOpen, files, setFiles }: { open: boolean, set
             }}>
               <div className="flex flex-row items-center gap-x-1">
                 <Plus className="h-[18px] w-[18px]"/>
-                {t('new')}
+                {t('ui:new')}
               </div>
             </Button>
           } 
@@ -91,8 +113,8 @@ function NewFilesButton({ open, setOpen, files, setFiles }: { open: boolean, set
         setTargetLanguage(DEFAULT_TARGET_LANGUAGE)
         setIsSubmitting(false)
       }}
-      title={t('translateFiles')}
-      description={t('translateFilesDescription')}
+      title={t('ui:translateFiles')}
+      description={t('ui:translateFilesDescription')}
       contentClassName="w-fit"
     >
       <div className="h-[60vh] w-[60vw]">
@@ -101,6 +123,12 @@ function NewFilesButton({ open, setOpen, files, setFiles }: { open: boolean, set
           setFiles={setFiles}
           targetLanguage={targetLanguage}
           setTargetLanguage={setTargetLanguage}
+          onSubmit={async () => {
+            onCreateRuns({ files, targetLanguage });
+            setOpen(false);
+          }}
+          onStartSubmit={() => setIsSubmitting(true)}
+          onFinishSubmit={() => setIsSubmitting(false)}
           submitButton={
             {
               content:
@@ -110,7 +138,7 @@ function NewFilesButton({ open, setOpen, files, setFiles }: { open: boolean, set
                   size="default"
                   disabled={isSubmitting || files.length === 0}
                 >
-                  {t('translate')}
+                  {t('ui:translate')}
                 </Button>,
               x: 'right',
               y: 'bottom',

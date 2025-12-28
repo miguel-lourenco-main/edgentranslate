@@ -48,7 +48,7 @@ export function TierEffect({
               borderWidth={borderWidth}
               colorFrom={colors.from}
               colorTo={colors.to}
-              className="inset-px!"
+              className="!inset-[1px]"
             />
           </div>
         </div>

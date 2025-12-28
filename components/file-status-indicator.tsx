@@ -20,14 +20,12 @@ export function FileStatusIndicator(props: {
       return (
         <div className={cn(base, 'bg-muted text-foreground')}>
           <Loader2 className="h-3 w-3 animate-spin" />
-          Uploading
         </div>
       );
     case 'uploaded':
       return (
         <div className={cn(base, 'bg-emerald-600 text-white')}>
           <CheckCircle2 className="h-3 w-3" />
-          Uploaded
         </div>
       );
     case 'client':

@@ -42,7 +42,7 @@ export default function FileTranslationForm({
     submitButton
 }: FileTranslationFormProps) {
 
-    const { t } = useTranslation('custom');
+    const { t } = useTranslation(['custom', 'ui']);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { control, handleSubmit, formState: { errors }, setValue } = useForm<FormData>({
@@ -58,11 +58,24 @@ export default function FileTranslationForm({
         setValue('targetLanguage', targetLanguage);
     }, [targetLanguage, setValue]);
 
+    useEffect(() => {
+        // Keep the form's `filesIds` in sync with the *uploaded* files only.
+        // This prevents submitting via Enter key (or stale form state) before uploads complete.
+        if (!files) return;
+        const uploadedIds = files
+            .filter(f => f.fileObject && f.uploadingStatus === 'uploaded')
+            .map(f => f.id)
+            .filter((id): id is string => Boolean(id));
+
+        setValue('filesIds', uploadedIds, { shouldValidate: true });
+    }, [files, setValue]);
+
     const handleAddFiles = useCallback(async (toAddFiles: TrackableFile[]) => {
         try {
             // Initially set files with uploading status
             const filesWithUploadingStatus = toAddFiles.map(f => ({
                 ...f,
+                id: f.id ?? (typeof crypto !== 'undefined' ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`),
                 uploadingStatus: 'uploading' as const
             }));
             
@@ -87,12 +100,20 @@ export default function FileTranslationForm({
     }, [setFiles]);
 
     const handleSubmitComplete = async (data: FormData) => {
+        // Extra guard: if `files` is provided, we require at least one uploaded file.
+        // This handles edge cases where Enter submits or form state gets stale.
+        if (files && !files.some(f => f.fileObject && f.uploadingStatus === 'uploaded')) {
+            toast.error('Please wait until your file finishes uploading.');
+            onFinishSubmit?.(false);
+            return;
+        }
+
         setIsSubmitting(true);
         onStartSubmit?.();
 
         try {
             await Promise.resolve(onSubmit?.(data));
-            toast.success(t('submitSuccess'));
+            toast.success('Successfully submitted files for translation.');
             onFinishSubmit?.(true);
         } catch (error) {
             console.error('Submit failed:', error);
@@ -123,7 +144,7 @@ export default function FileTranslationForm({
                             setTargetLanguage?.(value ?? 'en');
                         }}
                         initialValue={field.value}
-                        placeholder={t('selectLanguage')}
+                        placeholder={t('ui:selectLanguage')}
                         disabled={isSubmitting}
                     />
                 )}

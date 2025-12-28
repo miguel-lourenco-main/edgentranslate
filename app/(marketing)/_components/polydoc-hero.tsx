@@ -15,10 +15,11 @@ import { DEFAULT_TARGET_LANGUAGE, LANGUAGES } from "~/lib/constants";
 import FileTranslationsExamples from './file-translations-examples';
 import CustomCombox from "~/components/combox";
 import { TrackableFile } from "~/lib/interfaces";
+import { useLandingPageFiles } from "~/components/files-provider";
   
 export default function PolydocHero() {
 
-  const { t } = useTranslation('custom');
+  const { t } = useTranslation(['custom', 'ui']);
 
   const [files, setFiles] = useState<TrackableFile[]>([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -54,6 +55,7 @@ export default function PolydocHero() {
   const [targetLanguageForm, setTargetLanguageForm] = useState<string>(DEFAULT_TARGET_LANGUAGE);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const landingWorkflow = useLandingPageFiles();
   
   return (
     <div className='flex flex-col items-center space-y-16'>
@@ -82,7 +84,7 @@ export default function PolydocHero() {
           tooltip={t('selectLanguageTooltip')}
           onChange={(value) => {setTargetLanguageExamples(value ?? 'en')}}
           initialValue={targetLanguageExamples}
-          placeholder={t('selectLanguage')}
+          placeholder={t('ui:selectLanguage')}
         />
         <FileTranslationsExamples 
           targetLanguage={targetLanguageExamples} 
@@ -118,6 +120,16 @@ export default function PolydocHero() {
           setFiles={setFiles}
           targetLanguage={targetLanguageForm}
           setTargetLanguage={setTargetLanguageForm}
+          onSubmit={async () => {
+            const uploadedFiles = files
+              .filter((f) => f.fileObject && f.uploadingStatus === 'uploaded')
+              .map((f) => f.fileObject);
+
+            await landingWorkflow.saveLandingWorkflow({
+              files: uploadedFiles,
+              targetLanguage: targetLanguageForm,
+            });
+          }}
           onStartSubmit={() => setIsSubmitting(true)}
           onFinishSubmit={(success) => {
             if (success) {

@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "~/components/data-table/data-table-components/data-table-column-header"
-import { RunColumn, TrackableFile } from "~/lib/interfaces"
+import { RunColumn } from "~/lib/interfaces"
 import { BanIcon, CheckCircle2Icon, Download, Eye, Loader } from "lucide-react"
 import TooltipComponent from "~/components/tooltip-component"
 import { cn } from '~/lib/utils'
@@ -24,13 +24,13 @@ const columnClasses = {
   actions: "w-1/6 min-w-[8rem] max-w-[12rem]",
 }
 
-export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn) => void, t: TFunction<"custom", undefined>): ColumnDef<RunColumn>[] {
+export function runsColumns(onViewFiles: (run: RunColumn) => void, t: TFunction<"custom", undefined>): ColumnDef<RunColumn>[] {
 
   return [
     {
       accessorKey: "id",
       header: ({ column }) => (
-        <DataTableColumnHeader className="ml-3" column={column} title={t("id")} />
+        <DataTableColumnHeader className="ml-3" column={column} title={t("ui:id")} />
       ),
       cell: ({ row }) => (
         <TooltipComponent
@@ -48,7 +48,7 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
     {
       accessorKey: "created_at",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t("createdAt")} />
+        <DataTableColumnHeader column={column} title={t("custom:createdAt")} />
       ),
       cell: ({ row }) => {
         const createdAt = new Date(row.getValue("created_at")).toLocaleString()
@@ -70,7 +70,7 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
     {
       accessorKey: "filename",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t("filename")} />
+        <DataTableColumnHeader column={column} title={t("ui:filename")} />
       ),
       cell: ({ row }) => {
 
@@ -88,7 +88,7 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
     {
       accessorKey: "target_language",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t("targetLanguage")} />
+        <DataTableColumnHeader column={column} title={t("custom:targetLanguage")} />
       ),
       cell: ({ row }) => {
         const targetLanguage = Object.values(LANGUAGES_BY_REGION)
@@ -106,7 +106,7 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
     {
       accessorKey: "output_tokens",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t("usage")} />
+        <DataTableColumnHeader column={column} title={t("ui:usage")} />
       ),
       cell: ({ row }) => {
 
@@ -133,7 +133,7 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
     {
       accessorKey: "status",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t("status")} />
+        <DataTableColumnHeader column={column} title={t("ui:status")} />
       ),
       cell: ({ row }) => {
         const icon = () => {
@@ -143,21 +143,21 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
                 trigger={
                     <Loader className='stroke-foreground h-[18px] w-[18px] animate-spin' />//<CirclePause className="h-[18px] w-[18px] stroke-yellow-600 cursor-pointer"/>
                 }
-                content={t("translating")}
+                content={t("common:translating")}
               />
             case "succeeded":
               return <TooltipComponent
                 trigger={
                   <CheckCircle2Icon className="h-[18px] w-[18px] stroke-green-500 cursor-pointer"/>
                 }
-                content={t("succeeded")}
+                content={t("ui:succeeded")}
               />
             case "failed":
               return <TooltipComponent
                 trigger={
                   <BanIcon className="h-[18px] w-[18px] stroke-red-500 cursor-pointer"/>
                 }
-                content={t("failed")}
+                content={t("ui:failed")}
               />
             default:
               return <></>
@@ -176,13 +176,13 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
         const status = () => {
          switch(row.getValue("status")){
           case "running":
-            return t("translating")//<Progress value={progress} className="w-[100px]"/>
+            return t("common:translating")//<Progress value={progress} className="w-[100px]"/>
           case "succeeded":
-            return t("succeeded")
+            return t("ui:succeeded")
           case "failed":
-            return t("failed")
+            return t("ui:failed")
           default:
-            return t("waitingForTranslationToEnd")
+            return t("ui:waitingForTranslationToEnd")
          }
         }
     
@@ -202,8 +202,7 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
         
         const run = row.original;
         const isSucceeded = row.getValue("status") === "succeeded";
-
-        const outputFile = files.find(file => file.id === run?.output_file_id)
+        const outputFile = run.output_file_info?.fileObject ?? null
 
         const buttonClasses = cn(
           "flex size-fit items-center p-1.5 font-medium gap-x-2",
@@ -239,7 +238,7 @@ export function runsColumns(files: TrackableFile[], onViewFiles: (run: RunColumn
                       toast.error("Failed to download file");
                     }
                   } else {
-                    toast.error("No file id");
+                    toast.error("No output file");
                   }
                 }}
                 disabled={row.getValue("status") !== "succeeded"}
