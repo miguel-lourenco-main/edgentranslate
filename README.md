@@ -2,7 +2,7 @@
 
 ## 🔗 **Live Demo**
 
-- **Demo**: _Add your deployed URL here_ (this repo builds a static site into `out/`)
+- **Demo**: https://edgentranslate-41c1b4.gitlab.io
 
 [![Next.js](https://img.shields.io/badge/Next.js-Framework-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-Library-61DAFB?style=flat-square&logo=react)](https://react.dev/)
@@ -16,7 +16,7 @@
 
 ## 🚀 Project Overview
 
-**EdgeNTranslate** is a static-export Next.js application focused on **document translation workflows**—upload files, track “runs”, and compare original vs translated documents (PDF viewer/compare UI).
+**EdgenTranslate** is a UI-only version of the app I worked on while at Edgen, meant to be used for repository purposes. It is an application focused on **document translation workflows**—upload files, track “runs”, and compare original vs translated documents (PDF viewer/compare UI).
 
 This repository is built with a **static-first deployment model** (`next.config.ts` uses `output: 'export'`), making it easy to host on platforms like GitHub/GitLab Pages or any static hosting provider.
 
@@ -50,78 +50,5 @@ This repository is built with a **static-first deployment model** (`next.config.
 
 ---
 
-## 🛠️ Development Commands
-
-```bash
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-
-# Typecheck
-pnpm typecheck
-
-# Lint
-pnpm lint
-
-# Build a static production export into ./out
-pnpm build
-```
-
----
-
-## 🔧 Configuration
-
-This project validates its required public env vars at build/runtime (see `lib/config/app.config.ts`).
-
-### Environment Setup
-
-Create a `.env.local`:
-
-```env
-# Required (app metadata)
-NEXT_PUBLIC_PRODUCT_NAME="EdgeNTranslate"
-NEXT_PUBLIC_SITE_TITLE="EdgeNTranslate"
-NEXT_PUBLIC_SITE_DESCRIPTION="Translate documents while preserving layout"
-NEXT_PUBLIC_SITE_URL="http://localhost:3000"
-NEXT_PUBLIC_DEFAULT_LOCALE="en"
-NEXT_PUBLIC_DEFAULT_THEME_MODE="system"
-NEXT_PUBLIC_THEME_COLOR="#0ea5e9"
-NEXT_PUBLIC_THEME_COLOR_DARK="#22c55e"
-
-# Required (billing provider selector)
-NEXT_PUBLIC_BILLING_PROVIDER="stripe"
-
-# Optional (UI preferences)
-NEXT_PUBLIC_USER_NAVIGATION_STYLE="sidebar"
-NEXT_PUBLIC_HOME_SIDEBAR_COLLAPSED="false"
-NEXT_PUBLIC_EXPAND_SIDEBAR_ON_HOVER="true"
-
-# Optional (static hosting under a sub-path, e.g. GitLab Pages)
-BASE_PATH="/edgentranslate"
-
-# Optional (skip some production-only validations in CI)
-NEXT_PUBLIC_CI="true"
-```
-
-### Static Hosting Notes
-
-- **Output folder**: the production build is generated into `./out`
-- **Sub-path deployments**: if hosting under a sub-path, set `BASE_PATH` (used by `next.config.ts` for `basePath` + `assetPrefix`)
-
----
-
-## 🤝 Contributing
-
-This is a personal portfolio project, but **ideas, issues, and suggestions are always welcome**. Feel free to open an issue or submit a merge request if you see something that could be improved.
-
----
-
-## 📄 License
-
-This project is for personal portfolio purposes. **All rights reserved.**
-
----
 
 **Contact**: [LinkedIn](https://www.linkedin.com/in/miguel-louren%C3%A7o-395335355/) · [GitLab](https://gitlab.com/miguel-lourenco-main) · [Email](mailto:migasoulou@gmail.com)
