@@ -19,7 +19,7 @@ variables:
   PNPM_CACHE_FOLDER: .pnpm-store
 
 build_job:
-  extends: .node18_pnpm_devdeps
+  extends: .node22_pnpm
   stage: build
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
