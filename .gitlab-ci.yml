@@ -2,7 +2,7 @@
 # Pin `ref` to match: `git ls-tree HEAD infra` (update both when bumping the submodule).
 include:
   - project: public-work4/infra
-    ref: 9b5aefdbf859b548930c01b85ac7b080a1243cbc
+    ref: 1371da6638dc0dff34672d21056cd9364b050ad3
     file:
       - ci/templates/fragments/toolchain-node-pnpm.gitlab-ci.yml
       - ci/templates/deploy-gitlab-pages.gitlab-ci.yml
@@ -12,13 +12,12 @@ default:
 
 stages:
   - build
-  - deploy
+  - deploy_production
 
 variables:
   NODE_ENV: production
   PNPM_CACHE_FOLDER: .pnpm-store
 
-# Named build_job so deploy-gitlab-pages.pages can depend on it.
 build_job:
   extends: .node18_pnpm_devdeps
   stage: build
