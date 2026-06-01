@@ -1,48 +1,32 @@
-image: node:20
+# Submodule `infra` is not part of the parent tree; `include:local` cannot see those paths on GitLab.
+# Pin `ref` to match: `git ls-tree HEAD infra` (update both when bumping the submodule).
+include:
+  - project: public-work4/infra
+    ref: 1371da6638dc0dff34672d21056cd9364b050ad3
+    file:
+      - ci/templates/fragments/toolchain-node-pnpm.gitlab-ci.yml
+      - ci/templates/deploy-gitlab-pages.gitlab-ci.yml
+
+default:
+  interruptible: true
 
 stages:
   - build
-  - deploy
-
-cache:
-  key:
-    files:
-      - pnpm-lock.yaml
-  paths:
-    - .pnpm-store/
+  - deploy_production
 
 variables:
-  PNPM_HOME: "$CI_PROJECT_DIR/.pnpm"
+  NODE_ENV: production
+  PNPM_CACHE_FOLDER: .pnpm-store
 
-before_script:
-  - corepack enable
-  - corepack prepare pnpm@latest --activate
-  - pnpm config set store-dir .pnpm-store
-  - pnpm install --frozen-lockfile --prod=false
-
-build:
+build_job:
+  extends: .node22_pnpm
   stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - pnpm build
   artifacts:
     paths:
       - out/
     expire_in: 1 hour
-  only:
-    - main
-
-pages:
-  stage: deploy
-  script:
-    - cp -r out/* public/
-  artifacts:
-    paths:
-      - public
-    expire_in: never
-  only:
-    - main
-  # Ensure public access
-  environment:
-    name: production
-    url: $CI_PAGES_URL
-
