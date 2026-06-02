@@ -2,31 +2,12 @@
 # Pin `ref` to match: `git ls-tree HEAD infra` (update both when bumping the submodule).
 include:
   - project: public-work4/infra
-    ref: 1371da6638dc0dff34672d21056cd9364b050ad3
+    ref: f677f01dd94a7a0915f34b94d496618b7f971104
     file:
       - ci/templates/fragments/toolchain-node-pnpm.gitlab-ci.yml
+      - ci/templates/jobs-edgentranslate.gitlab-ci.yml
       - ci/templates/deploy-gitlab-pages.gitlab-ci.yml
-
-default:
-  interruptible: true
-
-stages:
-  - build
-  - deploy_production
 
 variables:
   NODE_ENV: production
   PNPM_CACHE_FOLDER: .pnpm-store
-
-build_job:
-  extends: .node22_pnpm
-  stage: build
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - pnpm build
-  artifacts:
-    paths:
-      - out/
-    expire_in: 1 hour
