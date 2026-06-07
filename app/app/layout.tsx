@@ -13,7 +13,7 @@ import { AppLogo } from '~/components/app-logo';
 import { personalAccountNavigationConfig } from '~/lib/config/personal-account-navigation.config';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
-// home imports
+// App shell layout: sidebar or header nav depending on env config.
 import { HomeMenuNavigation } from './_components/home-menu-navigation';
 import { HomeMobileNavigation } from './_components/home-mobile-navigation';
 import { HomeSidebar } from './_components/home-sidebar';

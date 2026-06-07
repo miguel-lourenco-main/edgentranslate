@@ -2,6 +2,7 @@ import { z } from "zod";
 import { formSchema } from "./schemas/translate-files";
 import { Tables } from "./database.types";
 
+/** Domain types derived from Supabase tables and form schemas. */
 export type FormData = z.infer<typeof formSchema>;
 export type Subscription = Tables<'subscriptions'>;
 export type LineItem = Tables<'subscription_items'>;

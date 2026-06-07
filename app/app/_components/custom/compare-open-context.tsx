@@ -1,3 +1,4 @@
+// Shared state for the PDF side-by-side compare dialog opened from table row actions.
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface CompareOpenContextType {

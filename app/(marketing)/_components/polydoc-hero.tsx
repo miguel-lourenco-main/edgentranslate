@@ -17,6 +17,8 @@ import CustomCombox from "~/components/combox";
 import { TrackableFile } from "~/lib/interfaces";
 import { useLandingPageFiles } from "~/components/files-provider";
   
+// Marketing hero: live translation examples above, upload form below.
+// Submitting saves files to IndexedDB then navigates to /app for demo runs.
 export default function PolydocHero() {
 
   const { t } = useTranslation(['custom', 'ui']);
@@ -34,6 +36,7 @@ export default function PolydocHero() {
     }
   }, [smoothScrollTo]);
 
+  // Gate TypingAnimation until mount to avoid SSR/client text mismatch.
   const hasMounted = useSyncExternalStore(
     () => () => {},
     () => true,

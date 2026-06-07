@@ -12,7 +12,7 @@ import { AppLogo } from '~/components/app-logo';
 import { ProfileAccountDropdownContainer } from '~/components/personal-account-dropdown-container';
 import { personalAccountNavigationConfig } from '~/lib/config/personal-account-navigation.config';
 
-// home imports
+// Sidebar layout for /app; tokens widget and profile dropdown pinned to footer.
 import SidebarTokensLeft from './custom/sidebar-tokens-left';
 import { DUMMY_ACCOUNT } from '~/lib/constants';
 

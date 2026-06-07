@@ -9,6 +9,7 @@ import {
   resources,
 } from './resources';
 
+// Per-request i18n instance for server components and metadata generation.
 type I18nServerInstance = I18nType & { language: string };
 
 function pickLanguageFromAcceptLanguage(value: string | null | undefined) {

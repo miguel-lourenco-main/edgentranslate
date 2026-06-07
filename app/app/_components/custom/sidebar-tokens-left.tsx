@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import CurrentPages from "~/components/billing/polydoc/current-pages"
 import pathsConfig from "~/lib/config/paths.config";
 
+// Sidebar footer widget: shows remaining page quota and links to pricing.
 export default function SidebarTokensLeft() {
   const router = useRouter();
 

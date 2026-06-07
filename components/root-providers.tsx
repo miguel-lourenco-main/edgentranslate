@@ -13,6 +13,7 @@ import { ReactQueryProvider } from './react-query-provider';
 import { LandingPageFilesProvider } from './files-provider';
 import { SmoothScrollProvider } from '~/lib/hooks/use-smooth-scroll';
 
+// Provider order: data fetching → i18n → auth → theme → landing workflow → scroll.
 declare global {
   // pdfjs-dist@5 uses Promise.withResolvers; Firefox may not have it depending on version/config.
   interface PromiseConstructor {

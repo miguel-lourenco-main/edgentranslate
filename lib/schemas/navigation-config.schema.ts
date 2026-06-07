@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+/** Validates sidebar/header navigation structure and layout env overrides. */
 const RouteMatchingEnd = z
   .union([z.boolean(), z.function().input([z.string()]).output(z.boolean())])
   .default(false)

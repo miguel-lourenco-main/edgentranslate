@@ -4,6 +4,7 @@ import { NavigationConfigSchema } from '~/lib/schemas/navigation-config.schema';
 
 import pathsConfig from '~/lib/config/paths.config';
 
+// Icon size shared across personal-account sidebar/header nav items.
 const iconClasses = 'w-4';
 
 const routes = [

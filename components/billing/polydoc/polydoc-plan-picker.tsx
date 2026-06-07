@@ -69,6 +69,7 @@ export function PolydocPlanPicker(
   // eslint-disable-next-line react-hooks/incompatible-library
   const { interval: selectedInterval, planId: selectedPlanId, productId, pageCount } = form.watch();
 
+  // Snap page count to each product's valid range when the user switches plans.
   useEffect(() => {
     const planName = props.config.products.find(p => p.id === productId)?.name;
 

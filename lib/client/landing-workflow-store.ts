@@ -1,3 +1,7 @@
+/**
+ * Persists files and target language from the marketing hero form in IndexedDB
+ * so /app can seed demo translation runs after client-side navigation.
+ */
 import { idbDel, idbGet, idbSet } from './idb-kv';
 
 const KEY = 'landing-workflow-v1';

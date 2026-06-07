@@ -11,8 +11,10 @@ import type { PropsWithChildren } from 'react';
 import { cn } from '~/lib/utils';
 import { Spinner } from '~/components/spinner';
 
+// Module-level guard prevents multiple top loading bars during concurrent route transitions.
 let running = false;
 
+/** Full-page or inline loading overlay with optional top progress bar. */
 export function GlobalLoader({
   displayLogo = false,
   fullPage = false,

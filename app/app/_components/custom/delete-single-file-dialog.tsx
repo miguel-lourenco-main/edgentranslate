@@ -6,7 +6,7 @@ import { AlertDialogAction, AlertDialogCancel, AlertDialogFooter} from '~/compon
 import { DeleteDialogLayout } from '~/components/layouts/alert-dialog-layouts';
 import { useTranslation } from 'react-i18next';
 
-
+/** Single-file delete confirmation triggered from row action menus. */
 export default function DeleteSingleFileDialog({
     deleteFunc,
 }:{

@@ -1,3 +1,4 @@
+// Single shared i18next instance for the client; init runs once per page load.
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 

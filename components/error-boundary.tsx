@@ -7,6 +7,7 @@ interface Props {
   children: ReactNode;
 }
 
+/** Class boundary that renders `fallback` instead of crashing the subtree. */
 export class ErrorBoundary extends Component<Props> {
   readonly state = { hasError: false, error: null };
 

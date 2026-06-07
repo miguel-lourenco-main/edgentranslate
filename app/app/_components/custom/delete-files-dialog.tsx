@@ -6,7 +6,7 @@ import { Trash } from 'lucide-react';
 import { cn } from '~/lib/utils';
 import { useTranslation } from 'react-i18next';
 
-
+/** Bulk-delete confirmation for selected rows in the runs/files table toolbar. */
 export default function DeleteFilesDialog({
     onDelete,
     hasSelected

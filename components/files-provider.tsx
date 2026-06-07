@@ -1,5 +1,9 @@
 'use client'
 
+/**
+ * React context that mirrors `landing-workflow-store` in component state.
+ * Hydrates from IndexedDB on mount so returning visitors keep their saved files.
+ */
 import * as React from 'react'
 import { clearLandingWorkflow, loadLandingWorkflow, saveLandingWorkflow } from '~/lib/client/landing-workflow-store'
 
@@ -37,6 +41,7 @@ export function LandingPageFilesProvider({ children }: LandingPageFilesProviderP
   React.useEffect(() => {
     let cancelled = false
 
+    // Restore marketing-page uploads from IndexedDB on first client render.
     async function hydrate() {
       if (typeof window === 'undefined') return
 

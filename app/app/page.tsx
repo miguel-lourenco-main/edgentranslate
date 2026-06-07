@@ -7,6 +7,7 @@ export const generateMetadata = async () => {
   };
 };
 
+// /app home route — renders the local translation runs dashboard.
 async function Page() {
 
   return (

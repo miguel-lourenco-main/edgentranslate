@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// Canonical in-app route paths; consumed by navigation config and redirects.
 const PathsSchema = z.object({
   app: z.object({
     home: z.string().min(1),

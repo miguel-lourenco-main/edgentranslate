@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+/** Password change form schema factory (includes translated mismatch message). */
 export const PasswordUpdateSchema = {
   withTranslation: (errorMessage: string) => {
     return z

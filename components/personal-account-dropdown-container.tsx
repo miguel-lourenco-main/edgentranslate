@@ -4,6 +4,7 @@ import { PersonalAccountDropdown } from './personal-account-dropdown';
 
 import pathsConfig from '~/lib/config/paths.config';
 
+// Thin wrapper wiring app paths and feature flags into the account dropdown.
 const paths = {
   app: pathsConfig.app.app,
 };

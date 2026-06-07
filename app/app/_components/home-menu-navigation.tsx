@@ -8,6 +8,7 @@ import { ProfileAccountDropdownContainer } from '~/components/personal-account-d
 import { personalAccountNavigationConfig } from '~/lib/config/personal-account-navigation.config';
 import { DUMMY_ACCOUNT } from '~/lib/constants';
 
+// Header navigation variant of the /app shell (flattens grouped routes into a flat menu).
 export function HomeMenuNavigation() {
   const routes = personalAccountNavigationConfig.routes.reduce<
     Array<{

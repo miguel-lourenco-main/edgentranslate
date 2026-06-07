@@ -1,5 +1,6 @@
 import { Card } from "~/components/shadcn/card";
 
+/** Renders grouped format or language chips for the marketing page sections. */
 interface Item {
   value: string;
   label?: string;

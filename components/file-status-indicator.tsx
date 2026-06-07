@@ -3,6 +3,7 @@
 import { Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { cn } from '~/lib/utils';
 
+/** Overlay badge showing upload lifecycle: uploading → uploaded, or client-only demo files. */
 export function FileStatusIndicator(props: {
   id?: string;
   status: 'uploading' | 'uploaded' | 'client' | 'error';

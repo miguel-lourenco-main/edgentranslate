@@ -10,6 +10,7 @@ import GeneralLoading from '~/components/general-loading';
 import PDFCompare from '~/components/pdf/pdf-compare';
 import { FileCache } from '~/lib/interfaces';
 
+// Static demo tabs; PDF pairs are fetched lazily from /public/files on tab switch.
 const initialTabs: TabData[] = [
   {
     icon: <FileText className='size-4' />,
@@ -125,6 +126,7 @@ export function useLoadPublicFiles({
   return { tabsData, isLoading, error, currentTab, setCurrentTab };
 }
 
+// SSR-safe mount check for PDF viewer (client-only APIs).
 function useHasMounted() {
   return useSyncExternalStore(
     () => () => {},

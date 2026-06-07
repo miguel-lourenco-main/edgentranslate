@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '~/components/shadcn/select';
 
+/** Profile settings control: switches UI locale via i18next and refreshes the route. */
 export function LanguageSelector({
   onChange,
 }: {

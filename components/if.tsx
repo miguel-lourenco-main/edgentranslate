@@ -2,6 +2,10 @@ import { useMemo } from 'react';
 
 type Condition<Value = unknown> = Value | false | null | undefined | 0 | '';
 
+/**
+ * Conditionally render children or fallback without nested ternaries.
+ * Supports render-prop children when `condition` is truthy.
+ */
 export function If<Value = unknown>({
   condition,
   children,

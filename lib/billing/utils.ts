@@ -3,8 +3,10 @@ import { MAX_PAGES_SUBSCRIPTION } from '~/lib/constants';
 import { z } from "zod";
 import { LineItemSchema, ProductSchema, TierSchema } from "~/lib/schemas/create-billing-schema";
 
+/** Billing helpers for page-count sliders, tier lookup, and plan selection. */
+
 export const validatePageCount = (value: number, lastValidValue: number) => {
-  // If we're in the forbidden range (5-50)
+  // Free caps at 5 pages; Pro starts at 50 — values in between are invalid.
   if (value > 5 && value < 50) {
     // Stick to the last valid value
     return lastValidValue;
@@ -125,6 +127,7 @@ export function getTierText(tier: z.infer<typeof TierSchema>, unit?: string) {
 
 // Function to determine the plan based on page count
 export const determinePlan = (pages: number) => {
+  // Boundaries mirror the pricing tiers: Free (≤5), Pro (6–9999), Business (max).
   if (pages <= 5) return 'Free';
   if (pages !== MAX_PAGES_SUBSCRIPTION) return 'Pro';
   return 'Business';

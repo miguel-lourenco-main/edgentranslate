@@ -13,7 +13,7 @@ import FileTranslationForm from '~/components/file-translation-form';
 import { DEFAULT_TARGET_LANGUAGE } from '~/lib/constants';
 import { SafeTranslation } from './safe-translation';
 
-
+// Data table for translation runs with a dialog to queue new local demo runs.
 export default function RunsTable({
   runs,
   newFiles,

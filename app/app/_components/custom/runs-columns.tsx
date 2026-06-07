@@ -11,6 +11,7 @@ import { LANGUAGES_BY_REGION } from "~/lib/constants"
 import type { TFunction } from "i18next";
 
 
+// Fixed column widths keep the runs table horizontally scrollable without reflow.
 const columnClasses = {
   base: "truncate",
   flexRow: "flex gap-x-4 items-center",

@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 //   monthly_credits: number;
 // }
 
+/** Displays remaining page quota; currently uses placeholder values until billing API is wired. */
 type CurrentPagesProps = {
   size?: 'small' | 'normal' | 'large'
   collapsed?: boolean

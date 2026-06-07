@@ -3,6 +3,8 @@
 import { Loader } from 'lucide-react';
 import { useSyncExternalStore } from 'react';
 
+// Defer i18n-dependent table rendering until after hydration; react-i18next
+// snapshots can differ between server and client on the first paint.
 export function SafeTranslation({ children }: { children: React.ReactNode }) {
   const hasMounted = useSyncExternalStore(
     () => () => {},

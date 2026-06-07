@@ -9,7 +9,8 @@ import PDFViewerDialog from '~/components/pdf/pdf-viewer-dialog';
 import { useLandingPageFiles } from '~/components/files-provider';
 import { DEFAULT_TARGET_LANGUAGE } from '~/lib/constants';
 
-
+// Local-only translation runs page: seeds demo rows from the marketing workflow
+// and simulates completion with timeouts (no backend API yet).
 export default function RunsPage() {
   const { t, ready } = useTranslation('custom');
 
@@ -118,6 +119,7 @@ export default function RunsPage() {
     targetLanguage,
   ]);
 
+  // Create optimistic "running" rows from newly uploaded files; flip to succeeded after a delay.
   const createRunsFromFiles = (input: { files: TrackableFile[]; targetLanguage: string }) => {
     const createdAt = new Date().toISOString();
 
