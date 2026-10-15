@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState, Suspense, useSyncExternalStore } from 'react';
+import React, { useCallback, useEffect, useRef, useState, Suspense, useSyncExternalStore } from 'react';
 import { Loader } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { TabData } from '~/lib/interfaces';
@@ -39,88 +39,78 @@ export function useLoadPublicFiles({
   targetLanguage: string;
 }) {
   const [tabsData, setTabsData] = useState<TabData[]>(initialTabs);
-  const [fileCache, setFileCache] = useState<FileCache>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<TabData | undefined>(initialTabs[0]);
+  const fileCacheRef = useRef<FileCache>({});
 
-  const loadFilePair = useCallback(async (tab: TabData) => {
-    const cacheKey = `${tab.file}_${targetLanguage}`;
-    
-    // Check cache first
-    if (fileCache[cacheKey]) {
-      return {
-        ...tab,
-        exampleFiles: fileCache[cacheKey],
-      };
-    }
+  const currentFile = currentTab?.file;
 
-    const originalFile = tab.file;
-    const translatedFile = tab.file.replace(/\.[^/.]+$/, `_translated_${targetLanguage}$&`);
-    const folder = originalFile.split('.')[0];
-
-    try {
-      const [originalResponse, translatedResponse] = await Promise.all([
-        fetch(`/files/${folder}/${originalFile}`),
-        fetch(`/files/${folder}/${translatedFile}`)
-      ]);
-
-      if (!originalResponse.ok || !translatedResponse.ok) {
-        throw new Error(`Failed to fetch files for ${tab.file}`);
-      }
-
-      const [originalBlob, translatedBlob] = await Promise.all([
-        originalResponse.blob(),
-        translatedResponse.blob()
-      ]);
-
-      const files = {
-        original: new File([originalBlob], originalFile, { type: 'application/pdf' }),
-        translated: new File([translatedBlob], translatedFile, { type: 'application/pdf' }),
-      };
-
-      // Store in cache
-      setFileCache(prev => ({
-        ...prev,
-        [cacheKey]: files
-      }));
-
-      return {
-        ...tab,
-        exampleFiles: files,
-      };
-    } catch (error) {
-      console.warn('Error loading file:', error);
-      return tab;
-    }
-  }, [targetLanguage, fileCache]);
-
-  // Load files only for the current tab
+  // Load the file pair for the selected tab + language. Keyed on the file name and
+  // language only, and guarded by `cancelled`, so a slow response for a previously
+  // selected tab can never overwrite the tab the user clicked last.
   useEffect(() => {
-    async function loadCurrentFile() {
-      if (!currentTab || isLoading) return;
-      
+    if (!currentFile) return;
+
+    let cancelled = false;
+    const cacheKey = `${currentFile}_${targetLanguage}`;
+
+    const applyFiles = (files: TabData['exampleFiles']) => {
+      setTabsData(prev => prev.map(tab =>
+        tab.file === currentFile ? { ...tab, exampleFiles: files } : tab
+      ));
+    };
+
+    const cached = fileCacheRef.current[cacheKey];
+    if (cached) {
+      applyFiles(cached);
+      return;
+    }
+
+    async function loadFilePair(file: string) {
       setIsLoading(true);
       setError(null);
+      // Clear stale files for this tab (e.g. from another language) while loading.
+      applyFiles({ original: null, translated: null });
+
+      const translatedFile = file.replace(/\.[^/.]+$/, `_translated_${targetLanguage}$&`);
+      const folder = file.split('.')[0];
 
       try {
-        if (!currentTab) return;
+        const [originalResponse, translatedResponse] = await Promise.all([
+          fetch(`/files/${folder}/${file}`),
+          fetch(`/files/${folder}/${translatedFile}`),
+        ]);
 
-        const updatedTab = await loadFilePair(currentTab);
-        
-        setTabsData(prev => prev.map(tab => 
-          tab.file === currentTab.file ? updatedTab : tab
-        ));
-      } catch (error) {
-        console.error('Error in loadCurrentFile:', error);
-        setError((error as Error).message);
+        if (!originalResponse.ok || !translatedResponse.ok) {
+          throw new Error(`Failed to fetch files for ${file}`);
+        }
+
+        const [originalBlob, translatedBlob] = await Promise.all([
+          originalResponse.blob(),
+          translatedResponse.blob(),
+        ]);
+
+        const files = {
+          original: new File([originalBlob], file, { type: 'application/pdf' }),
+          translated: new File([translatedBlob], translatedFile, { type: 'application/pdf' }),
+        };
+
+        fileCacheRef.current[cacheKey] = files;
+        if (!cancelled) applyFiles(files);
+      } catch (err) {
+        console.warn('Error loading file:', err);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     }
 
-    void loadCurrentFile();
-  }, [currentTab, targetLanguage, loadFilePair, isLoading]);
+    void loadFilePair(currentFile);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentFile, targetLanguage]);
 
   return { tabsData, isLoading, error, currentTab, setCurrentTab };
 }
@@ -145,23 +135,10 @@ export default function FileTranslationsHero({
   
   const hasMounted = useHasMounted();
 
-  const [isTabSwitching, setIsTabSwitching] = useState(false);
-  const [mountKey, setMountKey] = useState(0);
-
   const handleTabSwitch = useCallback((newTabLabel: string) => {
-    if (isTabSwitching) return;
-    
-    setIsTabSwitching(true);
-    
-    setMountKey(prev => prev + 1);
-
     const newTab = tabs.find(tab => tab.file === newTabLabel);
-    
-    setTimeout(() => {
-      setCurrentTab(newTab);
-      setIsTabSwitching(false);
-    }, 300);
-  }, [isTabSwitching, setCurrentTab, tabs]);
+    if (newTab) setCurrentTab(newTab);
+  }, [setCurrentTab, tabs]);
 
   const renderTabContent = useCallback((tab: TabData) => {
     const { exampleFiles } = tab;
@@ -176,14 +153,15 @@ export default function FileTranslationsHero({
 
     return (
       <PDFCompare
-        key={mountKey}
+        // Remount per file pair so the viewers never keep the previous tab's document.
+        key={`${tab.file}_${exampleFiles.translated.name}`}
         inputFile={exampleFiles.original}
         outputFile={exampleFiles.translated}
         currentTab={tab}
         type={tab.file.split('.').pop()}
       />
     );
-  }, [t, mountKey]);
+  }, [t]);
 
   return (
     <div className="flex flex-col w-[100rem] h-[43.5rem] bg-background border rounded-lg shadow-sm">
@@ -196,7 +174,6 @@ export default function FileTranslationsHero({
               currentTab?.file === tab.file ? 'bg-muted' : ''
             }`}
             onClick={() => handleTabSwitch(tab.file)}
-            disabled={isTabSwitching}
           >
             {tab.icon}
             <span className="max-w-[100px] truncate">{tab.file}</span>

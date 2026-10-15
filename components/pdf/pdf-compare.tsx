@@ -80,14 +80,6 @@ export function PDFView({
 }
 
 /**
- * File state interface for tracking loading and file status
- */
-type FileState = {
-  status: 'idle' | 'loading' | 'success' | 'error';
-  file: File | null;
-};
-
-/**
  * PDFCompare Component
  * Displays two PDF viewers side by side with synchronized scrolling
  */
@@ -102,15 +94,8 @@ export default function PDFCompare({
     currentTab?: TabData;            // Current tab information
     type?: string;                   // PDF type identifier
 }) {
-    // State management for file loading and rendering
-    const [inputFileState] = useState<FileState>({ 
-        status:'success', 
-        file: inputFile 
-    });
-    const [outputFileState] = useState<FileState>({ 
-        status: 'success', 
-        file: outputFile 
-    });
+    // Read the files straight from props. Snapshotting them into state on mount made
+    // the viewer keep showing the first file it received when the props changed.
     const [inputFileRendered, setInputFileRendered] = useState(false);
     const [outputFileRendered, setOutputFileRendered] = useState(false);
 
@@ -139,7 +124,7 @@ export default function PDFCompare({
                     <div className={cn("size-full min-h-0 rounded-lg border bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center", 
                         !inputFileRendered && "flex-1")}>
                         <PDFView
-                            file={inputFileState.file}
+                            file={inputFile}
                             isRendered={inputFileRendered}
                             index={0}
                             type={type}
@@ -158,7 +143,7 @@ export default function PDFCompare({
                     <div className={cn("size-full min-h-0 rounded-lg border bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center", 
                         !outputFileRendered && "flex-1")}>
                         <PDFView
-                            file={outputFileState.file}
+                            file={outputFile}
                             isRendered={outputFileRendered}
                             index={1}
                             type={type}
