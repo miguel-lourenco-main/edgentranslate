@@ -187,7 +187,7 @@ export default function FileTranslationsHero({
   }, [t, missingReason, targetLanguage]);
 
   return (
-    <div className="flex flex-col w-[100rem] h-[43.5rem] bg-background border rounded-lg shadow-sm">
+    <div className="flex flex-col w-full max-w-[100rem] h-[43.5rem] bg-background border rounded-lg shadow-sm">
       <div className="flex items-center border-b overflow-x-auto">
         {tabs.map((tab) => (
           <Button
