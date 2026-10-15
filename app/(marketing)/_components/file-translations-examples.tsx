@@ -9,6 +9,7 @@ import { Button } from '~/components/shadcn/button';
 import GeneralLoading from '~/components/general-loading';
 import PDFCompare from '~/components/pdf/pdf-compare';
 import { FileCache } from '~/lib/interfaces';
+import { getLanguageLabel, resolveSampleLanguage, sampleFileUrl } from '~/lib/sample-files';
 
 const initialTabs: TabData[] = [
   {
@@ -42,9 +43,12 @@ export function useLoadPublicFiles({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<TabData | undefined>(initialTabs[0]);
+  // Which file+language pair has no sample translation (or failed to load).
+  const [missing, setMissing] = useState<{ key: string; reason: 'unavailable' | 'failed' } | null>(null);
   const fileCacheRef = useRef<FileCache>({});
 
   const currentFile = currentTab?.file;
+  const currentKey = `${currentFile}_${targetLanguage}`;
 
   // Load the file pair for the selected tab + language. Keyed on the file name and
   // language only, and guarded by `cancelled`, so a slow response for a previously
@@ -61,25 +65,32 @@ export function useLoadPublicFiles({
       ));
     };
 
+    const sampleLanguage = resolveSampleLanguage(currentFile, targetLanguage);
+    if (!sampleLanguage) {
+      applyFiles({ original: null, translated: null });
+      setMissing({ key: cacheKey, reason: 'unavailable' });
+      return;
+    }
+
     const cached = fileCacheRef.current[cacheKey];
     if (cached) {
       applyFiles(cached);
       return;
     }
 
-    async function loadFilePair(file: string) {
+    async function loadFilePair(file: string, language: string) {
       setIsLoading(true);
       setError(null);
       // Clear stale files for this tab (e.g. from another language) while loading.
       applyFiles({ original: null, translated: null });
 
-      const translatedFile = file.replace(/\.[^/.]+$/, `_translated_${targetLanguage}$&`);
+      const translatedFile = file.replace(/\.[^/.]+$/, `_translated_${language}$&`);
       const folder = file.split('.')[0];
 
       try {
         const [originalResponse, translatedResponse] = await Promise.all([
-          fetch(`/files/${folder}/${file}`),
-          fetch(`/files/${folder}/${translatedFile}`),
+          fetch(sampleFileUrl(folder, file)),
+          fetch(sampleFileUrl(folder, translatedFile)),
         ]);
 
         if (!originalResponse.ok || !translatedResponse.ok) {
@@ -100,19 +111,22 @@ export function useLoadPublicFiles({
         if (!cancelled) applyFiles(files);
       } catch (err) {
         console.warn('Error loading file:', err);
+        if (!cancelled) setMissing({ key: cacheKey, reason: 'failed' });
       } finally {
         if (!cancelled) setIsLoading(false);
       }
     }
 
-    void loadFilePair(currentFile);
+    void loadFilePair(currentFile, sampleLanguage);
 
     return () => {
       cancelled = true;
     };
   }, [currentFile, targetLanguage]);
 
-  return { tabsData, isLoading, error, currentTab, setCurrentTab };
+  const missingReason = missing?.key === currentKey ? missing.reason : null;
+
+  return { tabsData, isLoading, error, currentTab, setCurrentTab, missingReason };
 }
 
 function useHasMounted() {
@@ -130,7 +144,7 @@ export default function FileTranslationsHero({
 }) {
   const { t } = useTranslation(`custom`);
 
-  const { tabsData: tabs, error, currentTab, setCurrentTab } =
+  const { tabsData: tabs, error, currentTab, setCurrentTab, missingReason } =
     useLoadPublicFiles({ targetLanguage });
   
   const hasMounted = useHasMounted();
@@ -142,6 +156,15 @@ export default function FileTranslationsHero({
 
   const renderTabContent = useCallback((tab: TabData) => {
     const { exampleFiles } = tab;
+    if (missingReason) {
+      return (
+        <div className='flex flex-col items-center justify-center size-full text-center text-muted-foreground'>
+          {missingReason === 'unavailable'
+            ? t('sampleTranslationUnavailable', { language: getLanguageLabel(targetLanguage) })
+            : t('sampleTranslationFailed')}
+        </div>
+      );
+    }
     if (!exampleFiles?.original || !exampleFiles?.translated) {
       return (
         <div className='flex flex-col items-center justify-center size-full space-y-3'>
@@ -161,7 +184,7 @@ export default function FileTranslationsHero({
         type={tab.file.split('.').pop()}
       />
     );
-  }, [t]);
+  }, [t, missingReason, targetLanguage]);
 
   return (
     <div className="flex flex-col w-[100rem] h-[43.5rem] bg-background border rounded-lg shadow-sm">

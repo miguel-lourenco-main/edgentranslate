@@ -1,0 +1,28 @@
+/* Shared print styles for the hand-translated sample documents (A4). */
+@page { size: A4; margin: 22mm 20mm; }
+* { box-sizing: border-box; }
+body { font-family: "Helvetica Neue", Arial, "Liberation Sans", sans-serif; color: #1f1f1f; font-size: 10.5pt; line-height: 1.55; margin: 0; }
+h1 { font-size: 22pt; font-weight: 400; text-align: center; margin: 28px 0 18px; }
+h2 { font-size: 14pt; font-weight: 400; margin: 26px 0 10px; }
+h3 { font-size: 11.5pt; font-weight: 700; margin: 16px 0 4px; }
+h4 { font-size: 10.5pt; font-weight: 700; margin: 10px 0 2px; }
+p { margin: 0 0 8px; text-align: justify; }
+ul, ol { margin: 4px 0 8px 18px; padding: 0; }
+li { margin-bottom: 3px; }
+table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; }
+th, td { border: 1px solid #d4d4d4; padding: 5px 8px; text-align: left; }
+th { color: #6b6b6b; font-weight: 400; text-align: center; }
+td.num { text-align: center; }
+.letterhead { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #444; padding-bottom: 14px; }
+.logo { width: 86px; height: 86px; border-radius: 50%; background: #111; color: #fff; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 15pt; line-height: 1; letter-spacing: 1px; }
+.contact { text-align: right; line-height: 1.75; }
+.page-break { break-before: page; }
+.muted { color: #6b6b6b; }
+.small { font-size: 9pt; }
+/* source_code sample (one-page product sheet) */
+.sheet h1 { font-weight: 700; margin-bottom: 4px; }
+.sheet .subtitle { text-align: center; color: #666; font-size: 13pt; margin-bottom: 34px; }
+.sheet .block { display: flex; gap: 28px; margin-bottom: 30px; align-items: center; }
+.sheet .block.reverse { flex-direction: row-reverse; }
+.sheet .num-badge { flex: 0 0 120px; height: 110px; border-radius: 14px; background: #eef3ff; color: #2f6bff; font-size: 54pt; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.sheet .block p { text-align: left; }

@@ -22,6 +22,8 @@
     "loadingDocument": "Loading Document...",
     "initializingDocViewer": "Initializing Document Viewer...",
     "fetchingFiles": "Fetching Files...",
+    "sampleTranslationUnavailable": "There is no sample translation of this file in {{language}} yet. Pick another language or file.",
+    "sampleTranslationFailed": "Could not load this sample file. Please try again.",
     "selectLanguageTooltip": "Select target language",
     "translations_lowercase": "translations",
     "submit": "Submit",
