@@ -11,7 +11,7 @@ import { DEFAULT_TARGET_LANGUAGE } from '~/lib/constants';
 
 
 export default function RunsPage() {
-  const { t, ready } = useTranslation('custom');
+  const { t, ready } = useTranslation(['custom', 'ui']);
 
   const [newFilesDialogOpen, setNewFilesDialogOpen] = useState<boolean>(false);
   const [compareDialogOpen, setCompareDialogOpen] = useState(false);
@@ -209,7 +209,7 @@ export default function RunsPage() {
           externalOpen={compareDialogOpen}
           externalSetOpen={() => setCompareDialogOpen(false)}
           trigger={<div />} // Empty trigger as we're controlling it externally
-          title={t('compareDocuments')}
+          title={t('ui:compareDocuments')}
           description={selectedRun?.input_file_info?.fileObject?.name ?? ''}
         />
     </div>

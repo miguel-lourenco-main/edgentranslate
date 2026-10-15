@@ -1,19 +1,28 @@
 "use client";
 
 import React, { UIEventHandler, useCallback, useEffect, useRef, useState } from "react";
-import { pdfjs } from "react-pdf";
+import type { pdfjs } from "react-pdf";
 import dynamic from "next/dynamic";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-// Dynamically import PDF components to avoid SSR issues
-const Page = dynamic(() => import("react-pdf").then((mod) => mod.Page), { ssr: false });
-const Document = dynamic(() => import("react-pdf").then((mod) => mod.Document), { ssr: false });
+// PDF.js worker, served from /public. It must be an absolute URL: react-pdf presets the
+// relative 'pdf.worker.mjs' when its module is evaluated, which resolves against the
+// current route. After a client-side navigation to /app/, PDF.js requested
+// /app/pdf.worker.mjs (404), fell back to a fake worker that also failed, and stayed
+// broken when navigating back to the hero page until a hard refresh.
+const PDF_WORKER_SRC = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/pdf.worker.mjs`;
 
-// Initialize PDF.js worker
-if(typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc){
-  pdfjs.GlobalWorkerOptions.workerSrc = "./pdf.worker.mjs";
-}
+// Load react-pdf lazily (avoids SSR issues) and set the worker *after* its module has
+// run, so react-pdf's own default cannot overwrite it.
+const loadReactPdf = () =>
+  import("react-pdf").then((mod) => {
+    mod.pdfjs.GlobalWorkerOptions.workerSrc = PDF_WORKER_SRC;
+    return mod;
+  });
+
+const Page = dynamic(() => loadReactPdf().then((mod) => mod.Page), { ssr: false });
+const Document = dynamic(() => loadReactPdf().then((mod) => mod.Document), { ssr: false });
 
 const options = {};
 const maxWidth = 800;

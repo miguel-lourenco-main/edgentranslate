@@ -46,7 +46,7 @@ export default function FileTranslationForm({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
 
-    const { control, handleSubmit, formState: { errors }, setValue } = useForm<FormData>({
+    const { control, handleSubmit, formState: { errors, isSubmitted }, setValue } = useForm<FormData>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             filesIds: [],
@@ -68,8 +68,11 @@ export default function FileTranslationForm({
             .map(f => f.id)
             .filter((id): id is string => Boolean(id));
 
-        setValue('filesIds', uploadedIds, { shouldValidate: true });
-    }, [files, setValue]);
+        // Only re-validate once the user has tried to submit; validating on mount
+        // (when no file has been added yet) would show "At least one file is required"
+        // before the user has touched the form.
+        setValue('filesIds', uploadedIds, { shouldValidate: isSubmitted });
+    }, [files, setValue, isSubmitted]);
 
     const handleAddFiles = useCallback(async (toAddFiles: TrackableFile[]) => {
         try {
