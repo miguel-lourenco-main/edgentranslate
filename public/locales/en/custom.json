@@ -42,5 +42,12 @@
     "fairPricingForAllTypesOfBusinesses": "Fair pricing for all types of businesses",
     "getStartedOnOurFreePlanAndUpgradeWhenYouAreReady": "Get started on our free plan and upgrade when you are ready.",
     "noFileCurrentlyAvailable": "No file currently available",
-    "loadingFiles": "Loading Files..."
+    "loadingFiles": "Loading Files...",
+    "previewNotAvailable": "Preview not available for .{{extension}} yet",
+    "previewNotAvailableGeneric": "Preview not available for this file type yet",
+    "downloadFile": "Download file",
+    "previewMismatchTitle": "This file is not a valid .{{extension}} file",
+    "previewMismatchDescription": "Its content does not match its extension, so it cannot be previewed. Check the file and upload it again.",
+    "previewErrorTitle": "Could not render this .{{extension}} file",
+    "previewErrorDescription": "The file may be damaged or use features the preview does not support. Please try again."
 }

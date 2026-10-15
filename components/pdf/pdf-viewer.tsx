@@ -3,6 +3,7 @@
 import React, { UIEventHandler, useCallback, useEffect, useRef, useState } from "react";
 import type { pdfjs } from "react-pdf";
 import dynamic from "next/dynamic";
+import { DocumentPreviewError } from "~/lib/document-kind";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -37,13 +38,15 @@ export default function PDFViewer(
     setIsRendered,     // Callback when PDF is fully rendered
     type,              // PDF type (e.g., 'pptx' for special handling)
     onScroll,          // Scroll synchronization callback
-    scrollRef          // Ref for scroll synchronization
+    scrollRef,         // Ref for scroll synchronization
+    onError            // Reports a document that PDF.js could not load
   }: { 
     pdf: File; 
     setIsRendered?: (b: boolean) => void; 
     type?: string; 
     onScroll?: UIEventHandler<HTMLDivElement>; 
     scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
+    onError?: (error: DocumentPreviewError) => void;
   }
 ) {
   // State management
@@ -188,7 +191,11 @@ export default function PDFViewer(
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
-        onLoadError={cleanupPDF}
+        onLoadError={(error) => {
+          // Show the error panel instead of loading forever.
+          cleanupPDF();
+          onError?.(new DocumentPreviewError("render", "pdf", { cause: error }));
+        }}
         options={options}
         className="flex flex-col space-y-4 w-full"
         loading={null}
