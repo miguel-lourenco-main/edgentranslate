@@ -26,3 +26,74 @@ comment_mirror:
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
     COMMENT_MIRROR_ALLOWED_PATH_PREFIXES: "app/,components/,lib/"
+
+# ---------------------------------------------------------------------------
+# Legacy UI variant (#3)
+# ---------------------------------------------------------------------------
+# Same pattern as my-cv's /warp and /visor: `main` is built by `build_job` and served
+# at the site root; the frozen `legacy` branch is built under /legacy with its own
+# checkout + install (its lockfile may diverge from main's), and `pages` merges both
+# outputs into one public/ artifact. Until a `legacy` branch exists the job skips and
+# only the root is published.
+build_legacy:
+  extends: .node22_pnpm
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  variables:
+    GIT_DEPTH: "0"                       # full history so the legacy branch is checkoutable
+    GIT_SUBMODULE_STRATEGY: none
+    LEGACY_BRANCH: legacy
+    BASE_PATH: /legacy                   # next.config.ts uses it for basePath + assetPrefix
+    NEXT_PUBLIC_UI_VARIANT: legacy
+    NEXT_PUBLIC_ALTERNATE_UI_URL: /      # "Try the new UI" link in the legacy header
+  before_script: []                      # install happens after switching branch
+  script:
+    - mkdir -p out-legacy
+    - |
+      if ! git ls-remote --exit-code --heads origin "${LEGACY_BRANCH}" > /dev/null; then
+        echo "No '${LEGACY_BRANCH}' branch yet; /legacy is not built."
+        exit 0
+      fi
+    - git fetch origin "+refs/heads/${LEGACY_BRANCH}:refs/remotes/origin/${LEGACY_BRANCH}"
+    - git checkout -f -B "ci-legacy" "origin/${LEGACY_BRANCH}"
+    - corepack enable
+    - corepack prepare pnpm@9.12.0 --activate
+    - pnpm config set store-dir .pnpm-store
+    - pnpm install --frozen-lockfile
+    - pnpm build
+    - rm -rf out-legacy && mv out out-legacy
+  artifacts:
+    paths:
+      - out-legacy/
+    expire_in: 1 hour
+
+# Override the included `pages` job to publish root + /legacy:
+#   /         -> main    (build_job    -> out/)
+#   /legacy/  -> legacy  (build_legacy -> out-legacy/, when the branch exists)
+pages:
+  stage: deploy_production
+  dependencies:
+    - build_job
+    - build_legacy
+  script:
+    - echo "Deploying to GitLab Pages - ${CI_PAGES_URL}"
+    - rm -rf public && mkdir -p public
+    - cp -r out/. public/
+    - |
+      if [ -d out-legacy ] && [ -n "$(ls -A out-legacy)" ]; then
+        mkdir -p public/legacy && cp -r out-legacy/. public/legacy/
+        echo "Published the legacy UI under /legacy/"
+      else
+        echo "No legacy build; publishing the root only."
+      fi
+    - ls -la public/
+  artifacts:
+    paths:
+      - public/
+    expire_in: never
+  environment:
+    name: production
+    url: $CI_PAGES_URL
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
