@@ -9,7 +9,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "translate": "node cli/translate.ts",
+    "test": "node --test \"lib/translation/**/*.test.ts\" \"cli/**/*.test.ts\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
