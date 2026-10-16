@@ -5,7 +5,9 @@ import { FileHandlers, TrackableFile } from "../../lib/interfaces";
 import TooltipComponent from "../tooltip-component";
 import { Trash2 } from "lucide-react";
 import { FileInputButton } from "./files-input-button";
-import { FILE_SUPPORTED_TYPES_VALUES_STRING } from "~/lib/constants";
+import { FILE_SUPPORTED_TYPES } from "~/lib/constants";
+import { describeFileRejections } from "~/lib/file-rejection";
+import { toast } from "sonner";
 import { Button } from "../shadcn/button";
 
 /**
@@ -15,11 +17,13 @@ import { Button } from "../shadcn/button";
 export const FileActionsBar = ({ 
     files, 
     disabled, 
-    handlers 
+    handlers,
+    onRejectionChange
 }: { 
     files: TrackableFile[], 
     disabled?: boolean, 
-    handlers: Pick<FileHandlers, 'handleDeleteAll' | 'handleAddFiles'> 
+    handlers: Pick<FileHandlers, 'handleDeleteAll' | 'handleAddFiles'>,
+    onRejectionChange?: (messages: string[]) => void
 }) => {
     const { t } = useTranslation('custom');
 
@@ -55,8 +59,13 @@ export const FileActionsBar = ({
                             />
                         </Button>
                     )}
-                    acceptsTypes={FILE_SUPPORTED_TYPES_VALUES_STRING}
+                    accept={FILE_SUPPORTED_TYPES}
                     addDroppedFiles={(files: File[]) => handlers.handleAddFiles(files.map(file => ({fileObject: file})))}
+                    onRejectFiles={(rejections) => {
+                        const messages = describeFileRejections(rejections, t, FILE_SUPPORTED_TYPES);
+                        messages.forEach(message => toast.error(message));
+                        onRejectionChange?.(messages);
+                    }}
                 />
             </div>
             {/* File count display */}
