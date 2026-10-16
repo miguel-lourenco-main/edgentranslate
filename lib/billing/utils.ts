@@ -3,6 +3,7 @@ import { MAX_PAGES_SUBSCRIPTION } from '~/lib/constants';
 import { z } from "zod";
 import { LineItemSchema, ProductSchema, TierSchema } from "~/lib/schemas/create-billing-schema";
 
+// Page counts between 5 and 50 are not offered, so the slider keeps its previous value there.
 export const validatePageCount = (value: number, lastValidValue: number) => {
   // If we're in the forbidden range (5-50)
   if (value > 5 && value < 50) {
@@ -14,6 +15,7 @@ export const validatePageCount = (value: number, lastValidValue: number) => {
   return Math.min(Math.max(5, value), MAX_PAGES_SUBSCRIPTION);
 };
 
+// The slider is logarithmic: 5 pages maps to 0 and MAX_PAGES_SUBSCRIPTION maps to 1.
 export const valueToSliderPosition = (value: number) => {
   return Math.log(value / 5) / Math.log(MAX_PAGES_SUBSCRIPTION / 5);
 };
@@ -67,6 +69,7 @@ function convertLineItemToTiers(lineItem: z.infer<typeof LineItemSchema>): Stand
   }
 
   // For flat rate or per_seat items, create a single tier
+  // (The metered branch and the fallback below both use a zero-cost tier.)
   if (lineItem.type === 'flat' || lineItem.type === 'per_seat') {
     return [{
       cost: lineItem.cost,

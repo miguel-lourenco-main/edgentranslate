@@ -23,6 +23,7 @@ export async function createI18nServerInstance(): Promise<I18nServerInstance> {
   const cookieStore = await cookies();
   const headerStore = await headers();
 
+  // An explicit `lang` cookie wins over the browser's Accept-Language header.
   const language = normalizeLanguage(
     cookieStore.get('lang')?.value ??
       pickLanguageFromAcceptLanguage(headerStore.get('accept-language')) ??

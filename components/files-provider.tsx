@@ -34,7 +34,9 @@ export function LandingPageFilesProvider({ children }: LandingPageFilesProviderP
   const [landingTargetLanguage, setLandingTargetLanguage] = React.useState<string | null>(null)
   const [landingWorkflowSavedAt, setLandingWorkflowSavedAt] = React.useState<number | null>(null)
 
+  // Restore any previously saved landing workflow from IndexedDB on mount.
   React.useEffect(() => {
+    // Guards against applying state after unmount.
     let cancelled = false
 
     async function hydrate() {
@@ -66,6 +68,7 @@ export function LandingPageFilesProvider({ children }: LandingPageFilesProviderP
         landingWorkflowSavedAt,
         setLandingPageFiles,
         saveLandingWorkflow: async (input) => {
+          // Update React state first so the UI reflects the change immediately, then persist.
           setLandingPageFiles(input.files)
           setLandingTargetLanguage(input.targetLanguage)
           setLandingWorkflowSavedAt(Date.now())

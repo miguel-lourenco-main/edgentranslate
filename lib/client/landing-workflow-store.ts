@@ -1,7 +1,9 @@
 import { idbDel, idbGet, idbSet } from './idb-kv';
 
+// Bump the version suffix (and the `version` field) if the stored shape changes.
 const KEY = 'landing-workflow-v1';
 
+// File contents are kept as raw bytes because `File` objects can't be persisted to IndexedDB directly.
 type StoredWorkflowFile = {
   name: string;
   type: string;
@@ -45,8 +47,10 @@ export async function loadLandingWorkflow(): Promise<{
   files: File[];
 } | null> {
   const payload = await idbGet<StoredLandingWorkflow>(KEY);
+  // Ignore missing or incompatible payloads instead of trying to migrate them.
   if (!payload || payload.version !== 1) return null;
 
+  // Rebuild real File objects from the stored bytes.
   const files = payload.files.map(
     (f) =>
       new File([f.bytes], f.name, {
