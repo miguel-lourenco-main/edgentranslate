@@ -40,6 +40,7 @@ build_legacy:
   stage: build
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH =~ /^ci-test\//    # CI TEST ONLY
   variables:
     GIT_DEPTH: "0"                       # full history so the legacy branch is checkoutable
     GIT_SUBMODULE_STRATEGY: none
@@ -97,3 +98,24 @@ pages:
     url: $CI_PAGES_URL
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+# ---------------------------------------------------------------------------
+# CI TEST ONLY (branch ci-test/*, never merged): run build_job, build_legacy and the
+# overridden pages script on this branch, under a job name that does not deploy Pages.
+# ---------------------------------------------------------------------------
+build_job:
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^ci-test\//
+  variables:
+    NEXT_PUBLIC_ALTERNATE_UI_URL: /legacy/
+
+pages_ci_test:
+  extends: pages
+  dependencies:
+    - build_job
+    - build_legacy
+  environment:
+    name: ci-test/legacy
+    action: prepare
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^ci-test\//
