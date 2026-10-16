@@ -44,7 +44,7 @@ build_legacy:
   variables:
     GIT_DEPTH: "0"                       # full history so the legacy branch is checkoutable
     GIT_SUBMODULE_STRATEGY: none
-    LEGACY_BRANCH: legacy
+    LEGACY_BRANCH: ci-test/legacy-source   # CI TEST ONLY
     BASE_PATH: /legacy                   # next.config.ts uses it for basePath + assetPrefix
     NEXT_PUBLIC_UI_VARIANT: legacy
     NEXT_PUBLIC_ALTERNATE_UI_URL: /      # "Try the new UI" link in the legacy header
