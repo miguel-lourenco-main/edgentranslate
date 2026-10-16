@@ -160,6 +160,7 @@ export default function PDFCompare({
         const otherRef = scrollRefs[otherIndex]?.current;
         if (otherRef) {
             otherRef.scrollTop = e.currentTarget.scrollTop;
+            otherRef.scrollLeft = e.currentTarget.scrollLeft;
         }
     }, [scrollRefs]);
 

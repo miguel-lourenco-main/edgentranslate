@@ -116,6 +116,13 @@ test.describe('compare view by document type (#5)', () => {
     for (const viewer of await viewers.all()) {
       await expect(viewer.getByText('Quarterly Operations Summary')).toBeVisible();
       await expect(viewer.locator('table')).toHaveCount(1);
+      // The page is wider than the panel: its left edge must stay reachable, not be
+      // pushed out to the left of the scroll container by the flex centring.
+      const { pageLeft, viewerLeft } = await viewer.evaluate(v => ({
+        pageLeft: v.querySelector('section.docx')!.getBoundingClientRect().left,
+        viewerLeft: v.getBoundingClientRect().left,
+      }));
+      expect(pageLeft).toBeGreaterThanOrEqual(viewerLeft);
     }
     expect(problems.filter(p => /InvalidPDF|Invalid PDF/i.test(p))).toEqual([]);
     expect(problems).toEqual([]);

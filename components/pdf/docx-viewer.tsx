@@ -76,7 +76,13 @@ export default function DocxViewer({
       data-testid="docx-viewer"
     >
       <div ref={styleRef} />
-      <div ref={bodyRef} className="[&_.docx-wrapper]:bg-transparent [&_.docx-wrapper]:p-4" />
+      {/* docx-preview centres pages with flexbox; a page wider than the panel would then
+          overflow on the left, where it cannot be scrolled to. Growing the wrapper to the
+          page width keeps the overflow on the right. */}
+      <div
+        ref={bodyRef}
+        className="[&_.docx-wrapper]:bg-transparent [&_.docx-wrapper]:p-4 [&_.docx-wrapper]:w-max [&_.docx-wrapper]:min-w-full"
+      />
     </div>
   );
 }
