@@ -95,9 +95,32 @@ function splitLongBlock(block: Block, maxChars: number): Block[] {
   return pieces;
 }
 
+const HEADING = /^\s{0,3}#{1,6}\s/;
+
+/**
+ * Joins each heading-only block to the block after it, so a chunk never ends on a
+ * heading whose section starts the next chunk: models drop such a dangling heading.
+ */
+function keepHeadingsWithNext(blocks: Block[]): Block[] {
+  const out: Block[] = [];
+  let pending: Block | null = null;
+  for (const block of blocks) {
+    const merged: Block = pending
+      ? { text: pending.text + pending.separator + block.text, separator: block.separator, fenced: block.fenced }
+      : block;
+    pending = null;
+    if (!merged.fenced && !merged.text.includes('\n') && HEADING.test(merged.text)) pending = merged;
+    else out.push(merged);
+  }
+  if (pending) out.push(pending);
+  return out;
+}
+
 export function chunkDocument(input: string, maxChars: number = DEFAULT_MAX_CHUNK_CHARS): Chunk[] {
   const leading = /^\s*/.exec(input)?.[0] ?? '';
-  const blocks = splitBlocks(input.slice(leading.length)).flatMap(block => splitLongBlock(block, maxChars));
+  const blocks = keepHeadingsWithNext(
+    splitBlocks(input.slice(leading.length)).flatMap(block => splitLongBlock(block, maxChars)),
+  );
 
   const chunks: Chunk[] = [];
   let current: Chunk | null = null;

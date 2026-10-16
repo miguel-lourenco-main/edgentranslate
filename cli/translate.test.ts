@@ -37,10 +37,10 @@ after(() => {
 describe('cli/translate', () => {
   it('translates a Markdown file next to the input, picking the installed model', async () => {
     const input = path.join(dir, 'notes.md');
-    writeFileSync(input, '# Title\n\nHello.\n');
+    writeFileSync(input, '# Title\n\nHello.\n\nBye.\n');
     const code = await main([input, '--to', 'fr', '--base-url', baseUrl, '--max-chunk-chars', '8']);
     assert.equal(code, 0);
-    assert.equal(readFileSync(path.join(dir, 'notes.fr.md'), 'utf8'), '[fr: # Title]\n\n[fr: Hello.]\n');
+    assert.equal(readFileSync(path.join(dir, 'notes.fr.md'), 'utf8'), '[fr: # Title\n\nHello.]\n\n[fr: Bye.]\n');
 
     // Refuses to overwrite without --force.
     assert.equal(await main([input, '--to', 'fr', '--base-url', baseUrl]), 2);

@@ -26,6 +26,17 @@ describe('chunkDocument', () => {
     }
   });
 
+  it('never ends a chunk on a heading', () => {
+    const input = 'Intro paragraph that fills the chunk.\n\n### Section\n\nBody of the section.\n\n## Last\n';
+    const chunks = chunkDocument(input, 50);
+    for (const chunk of chunks.slice(0, -1)) {
+      const lastLine = chunk.text.split('\n').pop() ?? '';
+      assert.doesNotMatch(lastLine, /^#{1,6}\s/, JSON.stringify(chunks));
+    }
+    assert.ok(chunks.some(c => c.text.startsWith('### Section\n\nBody of the section.')), JSON.stringify(chunks));
+    assert.equal(roundTrip(input, 50), input);
+  });
+
   it('groups paragraphs up to the size limit', () => {
     const chunks = chunkDocument('aaaa\n\nbbbb\n\ncccc\n\ndddd', 12);
     assert.deepEqual(chunks.map(c => c.text), ['aaaa\n\nbbbb', 'cccc\n\ndddd']);
