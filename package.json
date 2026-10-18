@@ -11,7 +11,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "translate": "node cli/translate.ts",
-    "test": "node --test \"lib/translation/**/*.test.ts\" \"cli/**/*.test.ts\""
+    "test": "node --test \"lib/translation/**/*.test.ts\" \"cli/**/*.test.ts\"",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -39,6 +40,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "docx-preview": "^0.4.1",
     "i18next": "^25.7.3",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.562.0",
@@ -59,6 +61,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -45,6 +45,8 @@ export default function FileTranslationForm({
     const { t } = useTranslation(['custom', 'ui']);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
+    // Reasons the last dropped/picked files were rejected, shown under the dropzone.
+    const [rejectionMessages, setRejectionMessages] = useState<string[]>([]);
 
     const { control, handleSubmit, formState: { errors, isSubmitted }, setValue } = useForm<FormData>({
         resolver: zodResolver(formSchema),
@@ -168,11 +170,16 @@ export default function FileTranslationForm({
                         disabled={isSubmitting}
                         onAddDocuments={handleAddFiles}
                         onRemoveDocuments={handleRemoveFiles}
+                        onRejectionChange={setRejectionMessages}
                     />
                 )}
             />
 
-            {errors.filesIds && <p className="text-red-500">{errors.filesIds.message}</p>}
+            {rejectionMessages.length > 0 ? (
+                <div role="alert" data-testid="file-rejection-error" className="text-red-500">
+                    {rejectionMessages.map(message => <p key={message}>{message}</p>)}
+                </div>
+            ) : errors.filesIds && <p className="text-red-500">{errors.filesIds.message}</p>}
             
             {submitButton?.y === "bottom" && (
                 <div className={cn("flex w-full px-2", submitButton.x === "left" ? "justify-start" : submitButton.x === "right" ? "justify-end" : "justify-center")} >

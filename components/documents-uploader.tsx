@@ -18,6 +18,7 @@ interface DocumentsUploaderProps {
     disabled?: boolean;                    // Flag to disable the uploader
     onAddDocuments?: (documents: TrackableFile[]) => void;         // Callback when files are added
     onRemoveDocuments?: (documents: TrackableFile[]) => void;      // Callback when files are removed
+    onRejectionChange?: (messages: string[]) => void;  // Translated reasons for the last rejected drop/pick (empty when none)
 }
 
 
@@ -30,7 +31,8 @@ export default function DocumentsUploader({
     setDocuments: externalSetDocuments,
     disabled,
     onAddDocuments,
-    onRemoveDocuments
+    onRemoveDocuments,
+    onRejectionChange
 }: DocumentsUploaderProps) {
 
     // Internal state for uncontrolled usage
@@ -80,6 +82,7 @@ export default function DocumentsUploader({
                 files={documents} 
                 disabled={disabled} 
                 handlers={fileHandlers} 
+                onRejectionChange={onRejectionChange}
             />
             {/* Drag and drop zone with file grid */}
             <FilesDragNDrop
@@ -88,6 +91,7 @@ export default function DocumentsUploader({
                 addFiles={fileHandlers.handleAddFiles}
                 removeFiles={fileHandlers.handleFileRemove}
                 disabled={disabled}
+                onRejectionChange={onRejectionChange}
             >
                 {documents.length === 0 ? (
                     <FileUploadGuide acceptedFileTypes={FILE_SUPPORTED_TYPES} />

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, UIEvent, useState, useCallback, useMemo } from 'react';
+import { useRef, UIEvent, useState, useCallback, useMemo, useEffect } from 'react';
 import LoadingDocument from "./loading-pdf";
 import { useTranslation } from 'react-i18next';
 import { FileIcon } from 'lucide-react';
@@ -10,13 +10,19 @@ import { Card } from '../shadcn/card';
 import { TabData } from '~/lib/interfaces';
 import { ErrorBoundary } from 'react-error-boundary';
 import { PDFErrorFallback } from './pdf-error-fallback';
+import { DocumentCouldNotRender, DocumentPreviewUnavailable } from './document-states';
+import { detectDocumentKind, DocumentKind } from '~/lib/document-kind';
 
-// Dynamically import PDFViewer to avoid SSR issues
+// Dynamically import the viewers to avoid SSR issues
 const PDFViewer = dynamic(() => import('./pdf-viewer'), { ssr: false });
+const DocxViewer = dynamic(() => import('./docx-viewer'), { ssr: false });
 
 /**
  * PDFView Component
- * Renders a single PDF viewer with loading and error states
+ * Renders a single document viewer with loading and error states. The renderer is
+ * chosen from the file's extension, MIME type and first bytes: PDF → react-pdf,
+ * DOCX → docx-preview, PPTX → "preview not available" with a download link, and
+ * anything that does not match its declared format → "could not render".
  */
 export function PDFView({
     file,
@@ -27,10 +33,10 @@ export function PDFView({
     handleScroll,
     scrollRefs,
 }: {
-    file: File | null,           // PDF file to display
-    isRendered: boolean,         // Whether PDF is fully rendered
+    file: File | null,           // Document to display
+    isRendered: boolean,         // Whether the document is fully rendered
     index: number,               // Index for sync scrolling
-    type?: string,               // PDF type identifier
+    type?: string,               // Document type identifier
     setIsRendered?: (b: boolean) => void,  // Callback when rendering completes
     handleScroll?: (index: number) => (e: UIEvent<HTMLDivElement>) => void,  // Sync scroll handler
     scrollRefs?: React.MutableRefObject<HTMLDivElement | null>[]  // Refs for sync scrolling
@@ -40,12 +46,38 @@ export function PDFView({
     const onScroll = handleScroll ? handleScroll(index) : undefined;
     const ref = scrollRefs?.[index] ? scrollRefs[index] : undefined;
 
+    // Detection result and render failure are tagged with the file they belong to, so a
+    // new file never shows the previous file's state.
+    const [detected, setDetected] = useState<{ file: File; kind: DocumentKind } | null>(null);
+    const [failedFile, setFailedFile] = useState<File | null>(null);
+
+    useEffect(() => {
+        if (!file) return;
+        let cancelled = false;
+        void detectDocumentKind(file).then(kind => {
+            if (!cancelled) setDetected({ file, kind });
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [file]);
+
+    const kind = file && detected?.file === file ? detected.kind : null;
+    const failed = file !== null && failedFile === file;
+
+    const handleError = useCallback(() => {
+        setFailedFile(file);
+    }, [file]);
+
     const handleReset = () => {
         // Reset rendered state when retrying after error
+        setFailedFile(null);
         if (setIsRendered) {
             setIsRendered(false);
         }
     };
+
+    const viewerKey = file ? `${file.name}_${file.size}_${file.lastModified}` : '';
 
     return (
         <div className="size-full justify-center items-center overflow-hidden border-muted border rounded-md">
@@ -55,25 +87,44 @@ export function PDFView({
                     {t('noFileCurrentlyAvailable')}
                 </div>
             )}
-            {/* Show loading state */}
-            {((!isRendered && file)) && <LoadingDocument />}
-            {/* Render PDF viewer when file is available */}
-            {file && (
-                <div className={cn("h-full w-full", isRendered ? "flex" : "hidden")}>
-                    <ErrorBoundary
-                        FallbackComponent={PDFErrorFallback}
-                        onReset={handleReset}
-                    >
-                        <PDFViewer 
-                            key={`${file.name}_${file.size}_${file.lastModified}`}
-                            pdf={file}
-                            setIsRendered={setIsRendered}
-                            onScroll={onScroll} 
-                            scrollRef={ref} 
-                            type={type}
-                        />
-                    </ErrorBoundary>
-                </div>
+            {/* Detecting the format */}
+            {file && kind === null && <LoadingDocument />}
+            {file && (kind === 'unrenderable' || failed) && (
+                <DocumentCouldNotRender file={file} onRetry={failed ? handleReset : undefined} />
+            )}
+            {file && kind === 'pptx' && <DocumentPreviewUnavailable file={file} />}
+            {/* Show loading state, then the viewer once it has rendered */}
+            {file && !failed && (kind === 'pdf' || kind === 'docx') && (
+                <>
+                    {!isRendered && <LoadingDocument />}
+                    <div className={cn("h-full w-full", isRendered ? "flex" : "hidden")}>
+                        <ErrorBoundary
+                            FallbackComponent={PDFErrorFallback}
+                            onReset={handleReset}
+                        >
+                            {kind === 'pdf' ? (
+                                <PDFViewer
+                                    key={viewerKey}
+                                    pdf={file}
+                                    setIsRendered={setIsRendered}
+                                    onError={handleError}
+                                    onScroll={onScroll}
+                                    scrollRef={ref}
+                                    type={type}
+                                />
+                            ) : (
+                                <DocxViewer
+                                    key={viewerKey}
+                                    file={file}
+                                    setIsRendered={setIsRendered}
+                                    onError={handleError}
+                                    onScroll={onScroll}
+                                    scrollRef={ref}
+                                />
+                            )}
+                        </ErrorBoundary>
+                    </div>
+                </>
             )}
         </div>
     );
@@ -109,6 +160,7 @@ export default function PDFCompare({
         const otherRef = scrollRefs[otherIndex]?.current;
         if (otherRef) {
             otherRef.scrollTop = e.currentTarget.scrollTop;
+            otherRef.scrollLeft = e.currentTarget.scrollLeft;
         }
     }, [scrollRefs]);
 

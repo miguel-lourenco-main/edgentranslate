@@ -152,6 +152,9 @@ export const MAX_FILE_SIZE_MB = 256 * 1024 * 1024;
 // Human-readable string representation of the maximum file size
 export const MAX_FILE_SIZE_STRING = `${MAX_FILE_SIZE_MB / 1024 / 1024}MB`;
 
+// Maximum number of files accepted in a single drop or pick
+export const MAX_FILES_PER_DROP = 1000;
+
 /**
  * Groups of supported file formats, used by UI components (marketing pages, selectors, etc).
  * Keep these in sync with `getFileIcon()` in `lib/icons.tsx`.
