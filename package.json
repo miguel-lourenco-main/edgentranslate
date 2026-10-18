@@ -10,6 +10,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
+    "translate": "node cli/translate.ts",
+    "test": "node --test \"lib/translation/**/*.test.ts\" \"cli/**/*.test.ts\"",
     "test:e2e": "playwright test"
   },
   "dependencies": {

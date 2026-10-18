@@ -50,5 +50,34 @@ This repository is built with a **static-first deployment model** (`next.config.
 
 ---
 
+## 🖥️ Local Translation (CLI preview)
+
+A first slice of the downloadable app (#4): translate **Markdown and TXT** files for real, with a local model through [Ollama](https://ollama.com) or any OpenAI-compatible API with your own key. PDF/DOCX, the Anthropic provider and the desktop app come next.
+
+Needs Node.js 22.18+ (it runs the TypeScript directly) and `pnpm install`.
+
+**Local model (Ollama)**
+
+```bash
+ollama pull qwen2.5:7b            # once
+ollama serve                      # if it is not already running
+pnpm translate notes.md --to fr   # writes notes.fr.md
+```
+
+**OpenAI-compatible API**
+
+```bash
+export EDGENTRANSLATE_API_KEY=sk-...
+pnpm translate notes.md --to de --provider openai --base-url https://api.openai.com/v1 --model <model-id>
+```
+
+The same provider works keyless against local OpenAI-compatible servers (Ollama's `/v1`, LM Studio, llama.cpp).
+
+`--glossary terms.json` (`{"source term": "target term"}`) pins terminology across chunks; `--list-models` and `--check` probe the server; `pnpm translate --help` lists every option. Long files are split at paragraph boundaries (code blocks are never split, and code-only chunks are not sent to the model), each chunk gets the previous one as context, and progress and token counts are printed per chunk. Ctrl+C cancels without writing a file.
+
+The engine lives in `lib/translation/` (provider interface, Ollama and OpenAI-compatible providers, chunking, classified errors) with no Next.js dependency, so the UI and desktop shell can reuse it. Tests: `pnpm test`.
+
+---
+
 
 **Contact**: [LinkedIn](https://www.linkedin.com/in/miguel-louren%C3%A7o-395335355/) · [GitLab](https://gitlab.com/miguel-lourenco-main) · [Email](mailto:migasoulou@gmail.com)
