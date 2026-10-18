@@ -1,6 +1,9 @@
 'use client'
 
 import { ChangeEvent, useId } from "react";
+import type { FileRejection } from "react-dropzone";
+import { FILE_SUPPORTED_TYPES } from "~/lib/constants";
+import { validateFiles } from "~/lib/file-rejection";
 
 /**
  * FileInputButton Component
@@ -10,11 +13,13 @@ import { ChangeEvent, useId } from "react";
  */
 export function FileInputButton({
   addDroppedFiles,
-  acceptsTypes,
+  onRejectFiles,
+  accept = FILE_SUPPORTED_TYPES,
   content
 }:{
   addDroppedFiles: (files: File[]) => void;  // Callback function when files are selected
-  acceptsTypes: string;                      // Comma-separated string of accepted file types
+  onRejectFiles?: (rejections: FileRejection[]) => void;  // Called with the files that were not accepted (empty when none)
+  accept?: Record<string, string[]>;         // Accepted MIME types and their extensions
   content: (handleFileUpload: () => void) => React.ReactNode;  // Render function for custom button content
 }){
   const inputId = useId();
@@ -29,28 +34,18 @@ export function FileInputButton({
 
   /**
    * Handles file selection changes
-   * Filters files based on accepted types and calls the callback
+   * Filters files based on accepted types and size and calls the callbacks
    */
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const droppedFiles = event.target.files ?? []
-    const fileArray = Array.from(droppedFiles);
+    const fileArray = Array.from(event.target.files ?? []);
+    // Allow picking the same file again after a rejection.
+    event.target.value = '';
 
-    // Parse accepted file types into array
-    const acceptedTypes = acceptsTypes.split(',').map(type => type.trim());
-    const acceptedFiles: File[] = [];
-    const rejectedFiles: File[] = [];
+    // Same type and size checks as the dropzone, so both entry points report the same reasons.
+    const { accepted, rejected } = validateFiles(fileArray, accept);
 
-    // Filter files based on type
-    fileArray.forEach((file: File) => {
-      if (acceptedTypes.some(type => file.type.match(type) ?? file.name.endsWith(type.replace('*', '')))) {
-        acceptedFiles.push(file);
-      } else {
-        rejectedFiles.push(file);
-      }
-    });
-
-    // Call callback with accepted files
-    addDroppedFiles(acceptedFiles);
+    if (accepted.length > 0) addDroppedFiles(accepted);
+    onRejectFiles?.(rejected);
   };
 
   return(
@@ -64,7 +59,7 @@ export function FileInputButton({
         multiple={true}
         style={{ display: 'none' }}
         onChange={handleFileChange}
-        accept={acceptsTypes}
+        accept={Object.values(accept).flat().join(',')}
       />
     </>
   )

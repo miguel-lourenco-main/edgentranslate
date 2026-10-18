@@ -35,12 +35,14 @@ export default function PDFViewer(
   { 
     pdf,                // PDF file to display
     setIsRendered,     // Callback when PDF is fully rendered
+    onError,           // Callback when the document cannot be loaded
     type,              // PDF type (e.g., 'pptx' for special handling)
     onScroll,          // Scroll synchronization callback
     scrollRef          // Ref for scroll synchronization
   }: { 
     pdf: File; 
     setIsRendered?: (b: boolean) => void; 
+    onError?: (error: Error) => void;
     type?: string; 
     onScroll?: UIEventHandler<HTMLDivElement>; 
     scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
@@ -188,7 +190,10 @@ export default function PDFViewer(
       <Document
         file={file}
         onLoadSuccess={onDocumentLoadSuccess}
-        onLoadError={cleanupPDF}
+        onLoadError={(error) => {
+          cleanupPDF();
+          onError?.(error);
+        }}
         options={options}
         className="flex flex-col space-y-4 w-full"
         loading={null}

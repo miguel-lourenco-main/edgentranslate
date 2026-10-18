@@ -5,7 +5,8 @@ import { FileRejection, useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { cn } from "~/lib/utils";
-import { MAX_FILE_SIZE_MB, MAX_FILE_SIZE_STRING } from "~/lib/constants";
+import { MAX_FILE_SIZE_MB, MAX_FILES_PER_DROP } from "~/lib/constants";
+import { describeFileRejections } from "~/lib/file-rejection";
 
 type DirectionOptions = 'ltr' | 'rtl';
 
@@ -16,6 +17,11 @@ type FilesDragNDropProps = {
   acceptFiles?: Record<string, string[]>;
   orientation?: 'horizontal' | 'vertical';
   disabled?: boolean;
+  /**
+   * Called after every drop or pick with the translated rejection reasons
+   * (an empty array when everything was accepted), so a parent form can show them inline.
+   */
+  onRejectionChange?: (messages: string[]) => void;
 };
 
 /**
@@ -51,55 +57,44 @@ export const FilesDragNDrop = forwardRef<
       acceptFiles = DEFAULT_ACCEPT,
       orientation = "vertical",
       children,
-      disabled
+      disabled,
+      onRejectionChange
     },
     ref
   ) => {
     // Component state
-    const [isFileTooBig, setIsFileTooBig] = useState(false);
+    const [hasRejection, setHasRejection] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
     const { t } = useTranslation('ui');
     const direction: DirectionOptions = "ltr";
 
     /**
      * Handles file drop events
-     * Processes both accepted and rejected files
+     * Adds the accepted files, then reports each distinct rejection reason
+     * (format, size, count) instead of assuming every rejection is a size problem.
      */
     const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
-      if (!acceptedFiles?.length) {
-        toast.error("File error: file is too big");
-        return;
+      if (acceptedFiles.length > 0) {
+        addFiles(acceptedFiles.map(file => ({ fileObject: file })));
       }
-      
-      // Convert files to TrackableFile format and add them
-      addFiles(acceptedFiles.map(file => ({ fileObject: file })));
 
-      // Handle rejected files with appropriate error messages
-      if (rejectedFiles.length > 0) {
-        for (const rejectedFile of rejectedFiles) {
-          if (rejectedFile?.errors[0]?.code === "file-too-large") {
-            toast.error(`${t("fileTooLarge")} ${MAX_FILE_SIZE_STRING}`);
-            break;
-          }
-          if (rejectedFile?.errors[0]?.message) {
-            toast.error(rejectedFile?.errors[0]?.message);
-            break;
-          }
-        }
+      const messages = describeFileRejections(rejectedFiles, t, acceptFiles);
+      for (const message of messages) {
+        toast.error(message);
       }
-    }, [addFiles, t]);
+      setHasRejection(messages.length > 0);
+      onRejectionChange?.(messages);
+    }, [addFiles, t, acceptFiles, onRejectionChange]);
 
     /**
      * Configure dropzone with options and event handlers
      */
     const dropzone = useDropzone({
       accept: acceptFiles,
-      maxFiles: 1000,
+      maxFiles: MAX_FILES_PER_DROP,
       maxSize: MAX_FILE_SIZE_MB,
       multiple: true,
       onDrop,
-      onDropRejected: () => setIsFileTooBig(true),
-      onDropAccepted: () => setIsFileTooBig(false),
       noClick: true, // Disable automatic click handling
     });
 
@@ -175,15 +170,18 @@ export const FilesDragNDrop = forwardRef<
         onKeyDownCapture={handleKeyDown}
         className={cn("relative flex w-full h-full gap-4 p-2 focus:outline-none overflow-hidden", className)}
         dir={direction}
+        data-testid="files-dropzone"
+        data-rejected={hasRejection || undefined}
         {...dropzone.getRootProps()}
         onClick={handleClick}
       >
         <div className={cn("flex absolute top-0 left-0 z-10 items-center justify-center w-full h-full p-2 bg-background/80")}>
           <div
             className={cn(
-              "flex flex-col items-center justify-center size-full rounded-lg duration-300 ease-in-out outline-dashed outline-1 outline-foreground cursor-pointer",
-              dropzone.isDragAccept ? "border-green-500" : 
-              dropzone.isDragReject || isFileTooBig ? "border-red-500" : "border-gray-300",
+              "flex flex-col items-center justify-center size-full rounded-lg duration-300 ease-in-out outline-dashed outline-1 cursor-pointer",
+              // The dashed outline is the visible border, so colour the outline itself.
+              dropzone.isDragAccept ? "outline-green-500" :
+              dropzone.isDragReject || hasRejection ? "outline-red-500" : "outline-foreground",
               disabled && "cursor-not-allowed"
             )}
           >
