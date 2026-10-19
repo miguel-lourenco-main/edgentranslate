@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
   },
+  experimental: {
+    // app/(legacy) and app/(v2) are separate root layouts (#3), so the site-wide 404
+    // lives in app/global-not-found.tsx, which renders its own <html>.
+    globalNotFound: true,
+  },
 };
 
 export default nextConfig;

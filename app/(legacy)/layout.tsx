@@ -1,45 +1,17 @@
-import { cn } from '~/lib/utils';
-
-import { RootProviders } from '~/components/root-providers';
-import { heading, sans } from '~/lib/fonts';
 import { generateRootMetadata } from '~/lib/root-metdata';
 
-import './globals.css';
+import { LegacyRoot } from './_components/legacy-root';
 
-export default async function RootLayout({
+/**
+ * Root layout of the legacy UI. `app/(v2)` has its own root layout, so the legacy
+ * CSS, fonts and providers stay inside this group (#3).
+ */
+export default function LegacyRootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const language = 'en';
-  const theme = undefined;
-  const className = getClassName(theme);
-
-  return (
-    <html lang={language} className={className} suppressHydrationWarning>
-      <body suppressHydrationWarning>
-        <RootProviders theme={theme} lang={language}>
-          {children}
-        </RootProviders>
-      </body>
-    </html>
-  );
-}
-
-function getClassName(theme?: string) {
-  const font = [sans.variable, heading.variable].reduce<string[]>(
-    (acc, curr) => {
-      if (acc.includes(curr)) return acc;
-
-      return [...acc, curr];
-    },
-    [],
-  );
-
-  // Note: theme classes (`dark`/`light`) are applied client-side by `next-themes`.
-  // We intentionally do not stamp them server-side to avoid hydration mismatches when
-  // cookie/localStorage/system preferences disagree.
-  return cn('min-h-screen bg-background antialiased', ...font);
+  return <LegacyRoot>{children}</LegacyRoot>;
 }
 
 export const generateMetadata = generateRootMetadata;
