@@ -1,18 +1,18 @@
-import { SitePageHeader } from '~/(marketing)/_components/site-page-header';
+import { SitePageHeader } from '~/(legacy)/(marketing)/_components/site-page-header';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
 export async function generateMetadata() {
   return {
-    title: 'Privacy Policy',
+    title: 'Cookie Policy',
   };
 }
 
-async function PrivacyPolicyPage() {
+async function CookiePolicyPage() {
   return (
     <div>
       <SitePageHeader
-        title={'Privacy Policy'}
-        subtitle={'How we handle your data.'}
+        title={'Cookie Policy'}
+        subtitle={'How we use cookies.'}
       />
 
       <div className={'container mx-auto py-8'}>
@@ -22,4 +22,4 @@ async function PrivacyPolicyPage() {
   );
 }
 
-export default withI18n(PrivacyPolicyPage);
+export default withI18n(CookiePolicyPage);

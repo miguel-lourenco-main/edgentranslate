@@ -19,7 +19,7 @@ import { Input } from '~/components/shadcn/input';
 import { Textarea } from '~/components/shadcn/textarea';
 import { Trans } from '~/components/trans';
 
-import { ContactEmailSchema } from '~/(marketing)/contact/_lib/contact-email.schema';
+import { ContactEmailSchema } from '~/(legacy)/(marketing)/contact/_lib/contact-email.schema';
 
 export function ContactForm() {
   const [pending, startTransition] = useTransition();

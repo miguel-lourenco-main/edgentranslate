@@ -1,8 +1,8 @@
 import { Heading } from '~/components/shadcn/heading';
 import { Trans } from '~/components/trans';
 
-import { SitePageHeader } from '~/(marketing)/_components/site-page-header';
-import { ContactForm } from '~/(marketing)/contact/_components/contact-form';
+import { SitePageHeader } from '~/(legacy)/(marketing)/_components/site-page-header';
+import { ContactForm } from '~/(legacy)/(marketing)/contact/_components/contact-form';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
 export async function generateMetadata() {

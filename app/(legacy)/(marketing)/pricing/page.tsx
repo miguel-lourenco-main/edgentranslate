@@ -1,6 +1,6 @@
 import { PolydocPricingTable } from '~/components/billing/polydoc/polydoc-pricing-table';
 
-import { SitePageHeader } from '~/(marketing)/_components/site-page-header';
+import { SitePageHeader } from '~/(legacy)/(marketing)/_components/site-page-header';
 import billingConfig from '~/lib/config/billing.config';
 import pathsConfig from '~/lib/config/paths.config';
 import { withI18n } from '~/lib/i18n/with-i18n';

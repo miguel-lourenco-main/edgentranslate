@@ -8,7 +8,7 @@ import { Button } from '~/components/shadcn/button';
 import { Heading } from '~/components/shadcn/heading';
 import { Trans } from '~/components/trans';
 
-import { SiteHeader } from '~/(marketing)/_components/site-header';
+import { SiteHeader } from '~/(legacy)/(marketing)/_components/site-header';
 import { DUMMY_ACCOUNT } from '~/lib/constants';
 
 const GlobalErrorPage = ({
