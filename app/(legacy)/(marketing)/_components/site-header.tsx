@@ -1,10 +1,7 @@
 import { Header } from '~/components/header';
 
 import { AppLogo } from '~/components/app-logo';
-import { Button } from '~/components/shadcn/button';
-import { Trans } from '~/components/trans';
-import { UiVariantLink } from '~/components/ui-variant-link';
-import { SHOW_V2_LINK } from '~/lib/config/ui-variant.config';
+import { TryV2Link } from '~/(legacy)/_components/try-v2-link';
 
 import { SiteHeaderAccountSection } from './site-header-account-section';
 import { SiteNavigation } from './site-navigation';
@@ -16,13 +13,7 @@ export function SiteHeader(props: { account: { id: string; name: string; picture
       navigation={<SiteNavigation />}
       actions={
         <>
-          {SHOW_V2_LINK ? (
-            <Button asChild variant="ghost">
-              <UiVariantLink to="v2">
-                <Trans i18nKey="marketing:tryNewUi" />
-              </UiVariantLink>
-            </Button>
-          ) : null}
+          <TryV2Link />
           <SiteHeaderAccountSection account={props.account} />
         </>
       }
