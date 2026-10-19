@@ -1,0 +1,103 @@
+/*
+ * Placeholder styles for the v2 variant (#3). Intentionally independent of the legacy
+ * globals.css and Tailwind theme: the v2 visual direction is not decided yet.
+ */
+:root {
+  color-scheme: light dark;
+  --v2-bg: #fafaf9;
+  --v2-fg: #1c1917;
+  --v2-muted: #57534e;
+  --v2-border: #e7e5e4;
+  --v2-accent: #1d4ed8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --v2-bg: #0c0a09;
+    --v2-fg: #f5f5f4;
+    --v2-muted: #a8a29e;
+    --v2-border: #292524;
+    --v2-accent: #93c5fd;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body.v2 {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--v2-bg);
+  color: var(--v2-fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+.v2 a {
+  color: inherit;
+}
+
+.v2-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  border-bottom: 1px solid var(--v2-border);
+}
+
+.v2-brand {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.v2-badge {
+  margin-left: 0.25rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--v2-border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--v2-muted);
+}
+
+.v2-switch {
+  font-size: 0.875rem;
+  color: var(--v2-muted);
+}
+
+.v2-main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 12vh, 8rem) 1rem;
+}
+
+.v2-main h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.2;
+}
+
+.v2-main p {
+  color: var(--v2-muted);
+}
+
+.v2-eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.v2-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--v2-border);
+  border-radius: 0.5rem;
+  color: var(--v2-accent) !important;
+  text-decoration: none;
+}

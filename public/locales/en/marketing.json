@@ -35,5 +35,6 @@
   "contactSuccessDescription": "We have received your message and will get back to you as soon as possible",
   "contactErrorDescription": "An error occurred while sending your message. Please try again later!",
   "footerDescription": "AI-powered translation for PDF, Word, and PowerPoint files. Preserve layout, tables, and images while delivering accurate, context-aware results for professional and academic needs.",
-  "copyright": "© Copyright {{year}} {{product}}. All Rights Reserved."
+  "copyright": "© Copyright {{year}} {{product}}. All Rights Reserved.",
+  "legacyUi": "Legacy UI"
 }
