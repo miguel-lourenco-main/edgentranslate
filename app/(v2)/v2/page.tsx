@@ -9,10 +9,11 @@ export default function V2HomePage() {
   return (
     <main className="v2-main" data-testid="v2-wip">
       <p className="v2-eyebrow">Work in progress</p>
-      <h1>The new PolyDoc UI is being designed</h1>
+      <h1>A new UI is being designed</h1>
       <p>
-        This is where the next version of the interface will live. Nothing here is final
-        yet: the design brief comes first. Until then, the current UI stays the default.
+        This is where the next version of the interface will live, under a new name. Nothing
+        here is final yet: the design brief comes first. Until then, the current UI stays the
+        default.
       </p>
       <p>
         <UiVariantLink to="legacy" className="v2-button">

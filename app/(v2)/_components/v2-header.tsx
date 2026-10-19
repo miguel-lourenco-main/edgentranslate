@@ -11,7 +11,7 @@ export function V2Header() {
   return (
     <header className="v2-header">
       <Link href={UI_VARIANT_PATHS.v2} className="v2-brand">
-        PolyDoc <span className="v2-badge">v2</span>
+        New UI <span className="v2-badge">work in progress</span>
       </Link>
       <UiVariantLink to="legacy" className="v2-switch">
         {marketing.legacyUi}

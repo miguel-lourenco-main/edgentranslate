@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 
-import { generateRootMetadata } from '~/lib/root-metdata';
-
 import { V2Header } from './_components/v2-header';
 
 import './v2.css';
@@ -25,11 +23,10 @@ export default function V2RootLayout({ children }: { children: React.ReactNode }
   );
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    ...(await generateRootMetadata()),
-    title: 'PolyDoc v2 (work in progress)',
-    // Not indexed while it is a placeholder.
-    robots: { index: false, follow: false },
-  };
-}
+// v2 is a rebrand (#3): it must not inherit the legacy name, favicon or Open Graph
+// tags from generateRootMetadata. Its name is still pending, so the title is neutral.
+export const metadata: Metadata = {
+  title: 'New UI (work in progress)',
+  // Not indexed while it is a placeholder.
+  robots: { index: false, follow: false },
+};
