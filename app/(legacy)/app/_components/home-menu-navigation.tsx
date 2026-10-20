@@ -3,6 +3,7 @@ import {
   BorderedNavigationMenuItem,
 } from '~/components/bordered-navigation-menu';
 
+import { TryV2Link } from '~/(legacy)/_components/try-v2-link';
 import { AppLogo } from '~/components/app-logo';
 import { ProfileAccountDropdownContainer } from '~/components/personal-account-dropdown-container';
 import { personalAccountNavigationConfig } from '~/lib/config/personal-account-navigation.config';
@@ -40,7 +41,8 @@ export function HomeMenuNavigation() {
         </BorderedNavigationMenu>
       </div>
 
-      <div className={'flex justify-end space-x-2.5'}>
+      <div className={'flex items-center justify-end space-x-2.5'}>
+        <TryV2Link />
         <ProfileAccountDropdownContainer account={DUMMY_ACCOUNT} />
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { SiteFooter } from '~/(marketing)/_components/site-footer';
-import { SiteHeader } from '~/(marketing)/_components/site-header';
+import { SiteFooter } from '~/(legacy)/(marketing)/_components/site-footer';
+import { SiteHeader } from '~/(legacy)/(marketing)/_components/site-header';
 import { withI18n } from '~/lib/i18n/with-i18n';
 import { DUMMY_ACCOUNT } from '~/lib/constants';
 

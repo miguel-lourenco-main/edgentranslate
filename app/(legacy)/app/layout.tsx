@@ -10,6 +10,7 @@ import {
 } from '~/components/page';
 
 import { AppLogo } from '~/components/app-logo';
+import { TryV2Link } from '~/(legacy)/_components/try-v2-link';
 import { personalAccountNavigationConfig } from '~/lib/config/personal-account-navigation.config';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
@@ -36,7 +37,10 @@ function UserHomeLayout({ children }: React.PropsWithChildren) {
       <PageMobileNavigation className={'flex items-center justify-between'}>
         <AppLogo />
 
-        <HomeMobileNavigation/>
+        <div className={'flex items-center gap-x-1'}>
+          <TryV2Link />
+          <HomeMobileNavigation/>
+        </div>
       </PageMobileNavigation>
 
       <PageBody>{children}</PageBody>
