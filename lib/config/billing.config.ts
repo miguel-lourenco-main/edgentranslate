@@ -57,6 +57,7 @@ export default createBillingSchema({
           id: 'pro-monthly',
           paymentType: 'recurring',
           interval: 'month',
+          // The tier whose `upTo` covers the page count sets the price for every page.
           lineItems: [
             {
               id: 'price_1Qk5ehA9qjC84Lu5u5yxku6M',

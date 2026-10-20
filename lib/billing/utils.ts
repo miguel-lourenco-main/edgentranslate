@@ -14,6 +14,7 @@ export const validatePageCount = (value: number, lastValidValue: number) => {
   return Math.min(Math.max(5, value), MAX_PAGES_SUBSCRIPTION);
 };
 
+// The page slider is logarithmic: 5..MAX_PAGES_SUBSCRIPTION maps onto 0..1.
 export const valueToSliderPosition = (value: number) => {
   return Math.log(value / 5) / Math.log(MAX_PAGES_SUBSCRIPTION / 5);
 };
@@ -89,6 +90,10 @@ function convertLineItemToTiers(lineItem: z.infer<typeof LineItemSchema>): Stand
   }];
 }
 
+/**
+ * Resolves the plan for a page count, then the tier of its primary line item that covers it.
+ * `index` is -1 when a level is missing (no product, plan or line item).
+ */
 export function getBillingInfoForPageCount(products: z.infer<typeof ProductSchema>[], pageCount: number, selectedInterval?: string) {
   const product = products.find(p => p.name === determinePlan(pageCount));
   

@@ -51,6 +51,7 @@ export interface ProviderHints {
   hasApiKey: boolean;
 }
 
+/** Aborted fetches throw AbortError; a request timeout (AbortSignal.timeout) throws TimeoutError. */
 function isAbortError(error: unknown): boolean {
   return error instanceof Error && (error.name === 'AbortError' || error.name === 'TimeoutError');
 }
@@ -136,6 +137,7 @@ export function classifyHttpError(status: number, body: string, url: string, hin
   });
 }
 
+/** Parses a base URL and rejects anything that is not http or https. */
 export function validateBaseUrl(baseUrl: string): URL {
   try {
     const url = new URL(baseUrl);

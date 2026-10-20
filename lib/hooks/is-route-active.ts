@@ -22,12 +22,12 @@ export function isRouteActive(
     return !end(currentPath);
   }
 
-  // otherwise - we use the evaluateIsRouteActive function
+  // otherwise - we use the checkIfRouteIsActive function
   const defaultEnd = end ?? true;
   const oneLevelDeep = 1;
   const threeLevelsDeep = 3;
 
-  // how far down should segments be matched?
+  // end = true highlights only the immediate parent; end = false also matches deeper routes.
   const depth = defaultEnd ? oneLevelDeep : threeLevelsDeep;
 
   return checkIfRouteIsActive(path, currentPath, depth);

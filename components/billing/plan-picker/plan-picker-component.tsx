@@ -60,6 +60,7 @@ export function PlanPickerComponent(
   const planId = useMemo(() => memoedProps.getFormValue('planId') as string, [memoedProps]);
   const selectedInterval = useMemo(() => memoedProps.getFormValue('interval') as string, [memoedProps]);
 
+  // Resolves the selected plan and product; both are null when the plan id is unknown.
   const { plan: selectedPlan, product: selectedProduct } = useMemo(() => {
     try {
       return getProductPlanPair(props.config, planId);
@@ -76,6 +77,7 @@ export function PlanPickerComponent(
     selectedPlan?.paymentType === 'recurring' || !selectedPlan;
   const locale = useTranslation().i18n.language;
 
+  // Matches the plan by its first line item id, which is the subscription's variant id.
   const isCurrentPlanSelected =
     props.currentSubscriptionVariantId !== undefined &&
     selectedPlan?.lineItems?.[0]?.id === props.currentSubscriptionVariantId;

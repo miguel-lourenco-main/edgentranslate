@@ -19,7 +19,7 @@ export const SmoothScrollContext = createContext<SmoothScrollContextType | undef
  * 
  * @param {Object} props - Component props
  * @param {React.ReactNode} props.children - Child components
- * @param {number} [props.threshold] - Optional scroll threshold
+ * @param {number} [props.threshold] - Optional scroll threshold (accepted but not used yet)
  */
 export function SmoothScrollProvider({ children }: { children: React.ReactNode, threshold?: number }) {
   const anchorRef = useRef<HTMLDivElement>(null);

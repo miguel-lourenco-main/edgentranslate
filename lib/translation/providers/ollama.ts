@@ -59,6 +59,7 @@ export class OllamaProvider implements TranslationProvider {
 
   async checkConnection(signal?: AbortSignal): Promise<ConnectionInfo> {
     const info = await listOllamaModels(this.baseUrl, signal);
+    // Ollama reports untagged names with an implicit ":latest" tag, so accept both forms.
     const installed = info.models.some(name => name === this.model || name === `${this.model}:latest`);
     if (!installed) {
       throw new TranslationError({

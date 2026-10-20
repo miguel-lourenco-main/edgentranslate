@@ -34,6 +34,7 @@ export function LandingPageFilesProvider({ children }: LandingPageFilesProviderP
   const [landingTargetLanguage, setLandingTargetLanguage] = React.useState<string | null>(null)
   const [landingWorkflowSavedAt, setLandingWorkflowSavedAt] = React.useState<number | null>(null)
 
+  // Restores the landing workflow saved in client storage once, on mount.
   React.useEffect(() => {
     let cancelled = false
 

@@ -12,6 +12,7 @@ export interface RequestJsonOptions {
 
 /** fetch + JSON with a timeout and classified errors. */
 export async function requestJson<T>(url: string, options: RequestJsonOptions): Promise<T> {
+  // The request aborts on whichever comes first: the timeout or the caller's cancel.
   const signals = [AbortSignal.timeout(options.timeoutMs)];
   if (options.signal) signals.push(options.signal);
 

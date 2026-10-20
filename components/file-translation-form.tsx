@@ -90,6 +90,7 @@ export default function FileTranslationForm({
                 setFiles(prev => [...prev, ...filesWithUploadingStatus]);
             }
     
+            // No network upload happens here: files flip to 'uploaded' after a fixed delay.
             setTimeout(() => {
                 if(setFiles){
                     setFiles(prev => prev.map(f => f.uploadingStatus === 'uploading' ? { ...f, uploadingStatus: 'uploaded' } : f));

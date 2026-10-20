@@ -48,6 +48,7 @@ export function PolydocCurrentSubscriptionCard({
   const isTrial = subscription.status === 'trialing';
   let planId = firstLineItem.variant_id;
 
+  // A trial is displayed as the free plan, whatever variant it was created with.
   if (isTrial) {
     planId = 'free-monthly';
   }
@@ -65,6 +66,7 @@ export function PolydocCurrentSubscriptionCard({
 
   const productLineItems = plan.lineItems;
 
+  // A pending plan change (downgrade) scheduled for the end of the period.
   let scheduledProductName = null;
 
   if (scheduledProductId) {

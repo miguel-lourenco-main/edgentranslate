@@ -23,6 +23,7 @@ function openDb(): Promise<IDBDatabase> {
   });
 }
 
+/** Opens the DB, runs `fn` against the store in one transaction, and resolves with its result. */
 function withStore<T>(
   mode: IDBTransactionMode,
   fn: (store: IDBObjectStore) => IDBRequest<T>,

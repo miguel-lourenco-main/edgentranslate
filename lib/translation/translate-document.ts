@@ -65,6 +65,7 @@ export async function translateDocument(options: TranslateDocumentOptions): Prom
 
   const usage: TokenUsage = { inputTokens: 0, outputTokens: 0 };
   const translations: string[] = [];
+  // Tail of the last translated chunk, passed to the next request as context.
   let previous: { source: string; translation: string } | undefined;
   let done = 0;
 

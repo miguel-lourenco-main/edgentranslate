@@ -14,6 +14,7 @@ export function buildTranslationMessages(request: TranslateChunkRequest): { syst
   const target = languageName(request.targetLanguage);
   const source = request.sourceLanguage ? languageName(request.sourceLanguage) : null;
 
+  // Joined into one system message below; glossary and context rules are added only when set.
   const rules = [
     `You are a professional translator. Translate the user's text ${source ? `from ${source} ` : ''}into ${target}.`,
     'Reply with the translation only: no preamble, no notes, no quotes around it.',
